@@ -415,3 +415,262 @@
 	
 	draw_d()
 ### 4-5 阿基米德螺旋线
+
+# 第14章 文件
+## 14.1 持久化
+## 14.2 读和写
+	>>>fout = open('output.txt','w') 
+	# 若存在，则清除旧数据重新开始写入，谨慎！！！
+	# 若不存在，则新建一个
+	>>>print fout
+	<open file 'output.txt', mode 'w' at 0xb7eb2410>
+	
+	>>>line1 = "This here's the wattle,\n"
+	>>>four.write(line1) 
+	# write方法把数据写入文件中，如果再次调用write，会在结尾处添加新数据
+    >>>fout.close()
+    #写入完毕时需要关闭文件
+## 14.3 格式操作符
+### write参数必须是字符串(str)，若要输入其他类型值，先转换为字符串
+	>>>x = 52
+	>>>f.write(str(x))
+### 另一个方法是使用*格式操作符*%
+	"""%：用于整数是求余操作符；用于字符串是格式操作符"""
+
+	>>>camels = 42
+	>>>'%d' % camels 
+	# 第一个操作对象(前者)是 格式字符串，包括一个或多个 格式序列
+    # 第二个操作对象被第一个指定如何格式化，其结果是一个字符串
+	'42'
+    
+	>>>camels = 42
+	>>>'I have spotted %d camels.' % camels
+	# 格式序列可以出现在字符串的任意地方
+	'I have spotted 42 camels'
+
+	>>>'In %d years I have spotted %g %s.' % (3, 0.1, 'camels')
+	# 如果字符串中有多于一个格式序列， 第二个操作对象必须是元组，按顺序对应每个元素
+	# '%d':格式化整数;'%g':格式化浮点数;'%s':格式化字符串
+	'In 3 years I have spotted 0.1 camels.'
+
+	>>>'%d %d %d' % (1, 2)
+	TypeError:not enough arguments for format string
+	>>>'%d' % 'dollar'
+	TypeError:illegal argument type for built-in operation
+## 14.4 文件名和路径
+### 当你打开一个文件用于读取时，默认在当前目录查找
+### os模块(operating system)提供用于操作文件和目录的函数
+	>>>import os
+	>>>cwd = os.getcwd()
+	# os.getcwd返回当前目录名称,cwd:current working directory
+	>>>print cwd
+	/home/dinsdale # 这里是名为dinsdale的用户的主目录
+### 类似于cwd这样的定位文件的字符串被称为一个*路径*(path)
+### *相对路径*从当前目录开始，至今为止我们看到的路径都是简单的文件名，所以它们都是相对于当前目录的。
+### *绝对路径*从文件系统的顶层目录开始
+	>>>os.path.abspath('memo.txt')
+	# os.path.abspath 可用于寻找文件的绝对路径
+	'/home/dinsdale/memo.txt'
+    
+    >>>os.path.exists('memo.txt')
+    # os.path.exists 检查一个文件或目录是否存在
+    True
+
+	>>>os.path.isdir('memo.txt')
+	# os.path.isdir 检查它是否为目录，如果它存在的话
+    False
+	>>>os.path.isdir('music')
+	True
+    
+    >>>os.path.isfile('memo.txt')
+    # os.path.isfile 检查它是否为文件
+	True
+
+	>>>os.listdir(cwd)
+	# os.listdir 返回指定目录中文件（以及其他目录）的列表
+	['music', 'photos', 'memo.txt']
+
+    def walk(dirname):
+		for name in os.listdir(dirname):
+			path = os.path.join(dirname, name)
+			# os.path.join 接受一个目录和一个文件名称，并拼接为一个完整的路径
+
+			if os.path.isfile(path)
+				print path
+			else:
+				walk(path)
+### 练习14-1
+	"""练习使用os.walk"""
+	import os
+
+	def print_path (path):
+	    for root, dirs, files in os.walk(path):
+	# os.walk (top, topdown=True, onerror=None, followlinks=False)
+	# os.walk 必须接受一个根目录(top)，从根目录开始遍历目录
+
+	        for filename in files:
+	            print (root, dirs, files)
+				# os.walk 返回一个元组:
+			    # root(str):目录的路径
+				# dirs(list):目录中的非文件项列表
+				# files(list):目录中的文件项列表
+
+	            print (os.path.join(root,filename))
+				# root与filename组合起来就是全路径
+	            
+	print_path ('C:\\Users\\Mrxcy\\Documents\\Python Scripts')
+	print_path ('.') # '.'表示当前目录
+
+## 14.5 捕获异常
+	>>>fin = open('bad_file')
+	IOError: [Errno 2] No such file or directory: 'bad file'
+	# 尝试打开一个不存在的文件
+
+	>>>fourt = open('/etc/passwd, 'w')
+	IOError: [Errno 13] Permission denied: '/etc/passwd'
+	# 访问一个没有访问权限的文件
+
+	>>>fin = open('/home')
+	IOError: [Errno 21] Is a directory
+	# 尝试打开一个目录用作文件读取
+
+### 要避免这些错误可以使用os.path.exists和os.path.isfile等函数
+### 检查可能需要花费大量时间和代码，最好去尝试，在发生的时候解决
+### try语句：
+	try:
+		fin = open('bad_file')
+		for line in fin:
+			print line
+		fin.close()
+	except:
+		print 'Something went wrong'
+	# Py先从try语句开始，如果正确跳过except，发生异常则跳出try，执行except
+### 使用try处理异常称为*捕获*一个异常
+### 练习 14-2
+	"""取出文件filename1中的字符串写入filename2中，
+	并且在遇到s_str时用r_str替换，在遇到异常时捕获异常"""
+	def sed(s_str, r_str, filename1, filename2):
+    	try:
+    	    fin1 = open(filename1, 'r')
+    	    fin2 = open(filename2, 'w')
+    	    for line in fin1:
+    	        word = line.strip()
+    	        if word == s_str:
+    	            fin2.write(r_str + '\n')
+    	        fin2.write(word + '\n')
+        
+		fin1.close()
+        fin2.close()
+   		#注意别忘了关闭文件！
+    	except:
+    	    print ('There are errors')
+
+	sed('and', 'or', 'words.txt', 'no_and_words.txt')
+	for word2 in open('no_and_words.txt'):
+    	print(word2)
+
+## 14.6 数据库
+### *数据库*是一个有组织的用于存储数据的文件
+### 跟字典不同的地方是数据库是保存在磁盘上的，程序结束时持续存在
+	>>>import anydbm
+	# 模块anydbm 提供了接口用于创建和更新数据库文件
+	>>>db = anydbm.open('caption.db', 'c')
+	# 模式'c'意味着如果不存在，数据库会被创建
+	>>>db['cleese.png'] = 'Photo of John Cleese.'
+	# 调用的结果是一个数据库对象，可以当做字典来用
+	>>>print db['cleese.png']
+	Photo of John Cleese.
+	# 访问数据库中的一项时，anydbm会读取文件
+	>>>db['cleese.png'] = 'Photo of John Cleese doing a silly walk.'
+	>>>print db['cleese.png']
+	Photo of John Cleese doing a silly walk.
+	# 对一个已经存在的值赋值，anydbm会替换旧值
+	for key in db:
+		print key
+	# 很多字典方法，比如keys和items对数据库适用，包括for循环
+	>>>db.close()
+	# 操作结束时需要关闭数据库
+
+## 14.7 封存
+### anydbm的限制之一是键和值必须是字符串
+### 可以使用*pickle*模块，其可以将几乎所有类型的对象转换成适合保存到数据库的字符串模式，并可以将字符串还原为对象。
+	>>>import pickle
+	>>>t = [1, 2, 3]
+	>>>pickle.dumps(t)
+	'(lp0\nI1\naI2\naI3\na.'
+	# pickle.dumps 接受一个对象作为参数，并返回它的字符串表达式
+	
+	>>>t1 = [1, 2, 3]
+	>>>s = pickle.dumps(t1)
+	>>>t2 = pickle.loads(s)
+	>>>print t2
+	[1, 2, 3]
+	# pickle.loads 接受字符串，重新构造对象
+	
+	>>>t1 == t2
+	True
+	>>>t1 is t2
+	False
+	# 封存再解封后，新旧对象的值相同，但是不是同一个对象，相当于复制了对象
+### 因为太常用，Py已经将这两个封装成了一个模块*shelve*
+### 练习 14-3
+	>>>没有做，一定要做！
+## 14.8 管道(pipe)
+### 大部分操作系统提供了命令行接口，也称为*字符界面(shell)*
+### 任何在字符界面能启动的程序都可以在Python中通过一个管道(pipe)来启动。管道代表一个正在运行的程序的对象。
+	>>>cmd = 'ls -l' # Unix命令'ls -l'，展示当前目录的内容
+	>>>fp = os.popen(cmd) 
+	#返回值是一个和打开的文件差不多的对象,可以使用readline来逐行阅读，
+	>>>res = fp.read()
+	#也可以使用read一次读取所有的输出
+	>>>stat = fp.close()
+	>>>print stat
+	None # None代表它正常结束了（没有错误）
+
+	>>>filename = 'book.tex'
+	>>>cmd = 'md5sum' + filename
+	# md5sum 是Unix系统提供的读取文件内容并计算一个“校验和”(checksum)
+	# 这个命令提供了一个高效的方法，用来对比两个文件是否包含相同的内容
+	# 不同内容生成相同校验和的几率极低
+	>>>fp = os.popen(cmd)
+	>>>res = fp.read()
+	>>>stat = fp.close()
+	>>>print res
+	................. book.tex
+	>>>print stat
+	None 
+### 练习 14-4
+	>>>没做，一定要做！
+## 14.9 编写模块
+	if __name__ == '__main__':
+		# __name__是一个内置变量，程序启动时会被设置。
+		#如果程序作为脚本执行，__name__的值是__main__；此时，测试代码会被执行。
+		#否则，如果程序作为模块被导入，则测试代码就被跳过了
+		print linecount('wc.py')
+### 当一个模块被导入的时候，Python什么都不会做，即使模块被修改，它也不会重新读取文件。
+### 可以使用内置函数reload()，但是它也可能会出别的问题，最好的办法是关掉解释器，重启。
+### 练习 14-5
+	def linecount(filename):
+    	count = 0
+    	for line in open(filename):
+        	count += 1
+    	return count
+
+	if __name__ == '__main__':    
+		# 也就是说，若是还需要将这个代码当模块使用的话，要写上面这一句
+		# 不然模块里面的代码在最后执行的时候也会被执行  
+		# 当其被当做模块执行时，__name__的值是它自己的名字，比如这里wc
+	    print (linecount('wc.py'))
+## 14.10 调试
+### 当读取和写入文件的时候很可能遇到一些看不见的空白字符
+### 可以使用内置函数repr()
+	>>>s = '1 2\t 3\n 4'
+	>>>print s
+	1 2  3 
+     4
+	>>>print repr(s)
+	'1 2\t 3\n 4'
+### 另外有的系统使用一个换行符\n，另外的系统使用一个回车符\r。也有两种一起使用的系统。如果在不同系统之间移动文件可能导致问题。
+### 大多数系统都有程序可以将一种格式转换成另一种，当然，也可以用repr()等自己写一个。
+## 14.11 术语表
+## 14.12 练习
