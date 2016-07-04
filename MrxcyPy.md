@@ -614,7 +614,39 @@
 	# 封存再解封后，新旧对象的值相同，但是不是同一个对象，相当于复制了对象
 ### 因为太常用，Py已经将这两个封装成了一个模块*shelve*
 ### 练习 14-3
-	>>>没有做，一定要做！
+	from anagram_sets import *
+
+	import shelve
+	import sys
+
+	def store_anagrams(filename, ad):
+	    """input filename of word txt, return a db for anagrams"""
+	    shelf = shelve.open(filename, 'c')
+    
+	    for word, word_list in ad.items():
+	        shelf[word] = word_list
+	    
+	    shelf.close()
+	
+	def read_anagrams(filename, word):
+	    shelf = shelve.open(filename)
+	    sig = signature(word)
+	 
+	    try:
+	        return shelf[sig]
+	    except KeyError:
+	        return []
+	
+	def main(name, command ='store'):
+	    if command == 'store': 
+	        ad = all_anagrams('words.txt')
+	        store_anagrams(name, ad)
+	    else:
+	        print (read_anagrams(name, command))
+	    
+	if __name__ == '__main__':
+	    main('anagram1.db', 'and')
+
 ## 14.8 管道(pipe)
 ### 大部分操作系统提供了命令行接口，也称为*字符界面(shell)*
 ### 任何在字符界面能启动的程序都可以在Python中通过一个管道(pipe)来启动。管道代表一个正在运行的程序的对象。
