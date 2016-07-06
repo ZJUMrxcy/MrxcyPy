@@ -415,6 +415,227 @@
 	
 	draw_d()
 ### 4-5 阿基米德螺旋线
+# 第5章 条件和递归
+## 5.1 求模操作符(%)(modulus operator)
+### 只作用于整数
+#### ①测试整除 x%y == 0
+#### ②获取一个数后一位或几位 # x%10 x%100 ...
+	>>>quotient = 7 / 3
+	>>>print quotient
+	2
+	
+	>>>reminder = 7 % 3
+	>>>print reminder
+	1
+## 5.2 布尔表达式(值为真或假)
+### 关系操作符(relational operator)
+	x == y
+	x != y
+	x > y
+	x < y
+	x >= y
+	x <= y
+## 5.3 逻辑操作符(logical operator)
+### and or not 
+### python中，任何非0的数都被解释为“true”
+	>>>17 and True
+	True
+## 5.4 条件执行
+### 条件语句(conditional statement)
+	if x > 0: # 条件(condition)
+		print 'x is position' # 最少需要一行
+	
+	if x < 0:
+		pass # 通常标记为一个没来得及写代码的位置(如需要处理负值的情况)
+## 5.5 选择执行
+	if x % 2 == 0:
+		print 'x is even' # 分支(branch)
+	else:
+		print 'x is odd' # 分支(branch)
+## 5.6 条件链(chained conditional)
+	if x < y:
+		print 'x is less than y'
+	elif x > y:
+		print 'x is greater than y'
+	else:
+		print 'x and y are equal' # else语句必须放最后，或者没有
+### false → false → true → 执行 → 结束 --- true --- true
+### 执行第一个true！
+## 5.7 嵌套条件(nested condition)
+	if x == y:
+		print 'x and y are equal'
+	else:
+		if x < y:
+			print 'x is less than y'
+		else:
+			print 'x is greater than y' # 嵌套越多，可读性越差，尽量避免
+### 逻辑操作符通常可以简化嵌套
+## 5.8 递归(recursion)
+### 函数调用另一个函数，或者调用自己都是合法的
+	def print_n (s, n):
+		if n <= 0:
+			return # return直接退出函数
+		print s
+		print_n (s, n-1)
+## 5.9 递归函数的栈图
+### 函数每一次被调用 → Python → 新建一个函数帧(function frame)(包括局部变量、参数)
+	"""<module> 函数 n = 3: # → __main__ 函数帧
+	   countdown n → 3
+	   countdown n → 2
+	   countdown n → 1
+       countdown n → 0 # 基准情形(base case):后面没有其他函数帧"""
+	
+	"""print_n 函数 s = 'Hello', n = 2
+	   <module> # → __main__ 函数帧  
+	   print_n s → 'Hello', n → 2
+	   print_n s → 'Hello', n → 1
+	   print_n s → 'Hello', n → 0"""
+## 5.10 无限递归(infinite recursion)
+### Python会在递归深度到达上限时报告一个错误信息：Runtime Error
+## 5.11 键盘输入
+### Python2: raw_input('提示信息')
+### Python3: input('提示信息')
+### 如果希望输入整数 
+	>>>speed = raw_input(prompt)
+	>>>int(speed)
+	
+	>>>speed = int(raw_input(prompt))
+## 5.12 调试
+### 回溯 → 最有用：①错误类型；②错误发生的地方
+## 5.13 练习
+### 5-2
+	"""do_n(f, n)：进行n次f()操作"""
+	def do_n(f, n):
+   
+	    if n <= 0:
+    	    return
+    	else:
+    	    f
+    	    do_n(f, n-1) 
+    
+	def f():
+	    print ('xcy is talent')
+
+	
+	do_n(f,8) # 这是个错的，因为执行f时就回打印后停止执行
+	
+	    
+	def do_n(g, n):
+	   
+	    if n <= 0:
+	        return
+	    else: 
+	        print(g)
+	        do_n(g, n-1)
+	    
+	def f():
+	    return 'xcy is talent'
+	
+	
+	do_n(f(), 8) # 可是为什么这个执行了print(g)，不会停止执行呢？，可能因为上面那个是无返回值函数，下面这个是有返回值的函数？
+### 5-3
+	"""输入三个整数与一个整数指数来检验费马大定理"""
+	def check_fermat(a,b,c,n):
+	   	int(a)
+    	int(b)
+    	int(c)
+    	int(n)
+    
+    	if n>2 and a**n+b**n==c**n:
+    	    print('天哪，费马弄错了')
+    	else:
+    	    print('不，那样不行')
+
+	def input_check_fermat(): 
+	    x=int(input('请输入整数a\n'))
+	    y=int(input('请输入整数b\n'))
+	    z=int(input('请输入整数c\n'))
+	    m=int(input('请输入整数n,其中n>2\n'))
+	    check_fermat(x,y,z,m)
+	
+	input_check_fermat()
+### 5-4
+	"""检验输入的边长是否可以组成三角形，如果可以打印Yes，不行打印No"""
+	def is_triangle():
+    	a=int(input('请输入边长a\n'))
+    	b=int(input('请输入边长b\n'))
+    	c=int(input('请输入边长c\n'))
+    	
+    	if a+b<=c or a+c<=b or b+c<=a:
+    	    print('No')
+    	else:
+    	    print('Yes')
+
+	is_triangle()
+### 5-5
+	"""用bob绘制一个分叉"""
+	from swampy.TurtleWorld import *
+	world=TurtleWorld()
+	bob=Turtle()
+	bob.delay=0.1
+
+	def draw(t,length,n):
+    	if n==0:
+    	    return
+    	angle=50
+	    fd(t,length*n)
+	    lt(t,angle)
+	    draw(t,length,n-1)
+	    rt(t,2*angle)
+	    draw(t,length,n-1)
+	    lt(t,angle)
+	    bk(t,length*n)
+	
+	draw(bob,10,2)
+### 5-6 
+	"""从雪花泛化为科勒曲线"""
+	from swampy.TurtleWorld import *
+	world=TurtleWorld()
+	bob=Turtle()
+	bob.delay=0.01
+	bob.x = -150
+	bob.y = -250
+	
+	import math
+	
+	"""设置对象t，直线距离总长度l，每次变化角度angle作为科勒曲线的初始化值"""
+	def koch(t,l,angle):
+	    if l<3.0:
+	        fd(t,l)
+	        return
+	    else:
+	        float(angle)
+	        m=l/(2+math.cos(angle/180*math.pi))
+	        koch(t,m,angle)
+	        lt(t,angle)
+	        koch(t,m,angle)
+	        rt(t,2*angle)
+	        koch(t,m,angle)
+	        lt(t,angle)
+	        koch(t,m,angle)
+
+	"""设置对象s_t，雪花边直线距离总长s_l，雪花每条边的每次变化角度为s_angle"""
+	def snowflake(s_t,s_l,s_angle):
+	    for i in range(3):
+	        koch(s_t,s_l,s_angle)
+	        rt(s_t,2*s_angle)
+	
+	"""设置科勒曲线输入函数，给定对象为bob"""
+	def input_koch():
+	    k=float(raw_input('input length\n'))
+	    k_angle=float(raw_input('input angle\n'))
+	    koch(bob,k,k_angle)
+	
+	"""设置雪花曲线输入函数，给定对象为bob"""
+	def input_snowflake():
+    	k=float(raw_input('input length\n'))
+	    k_angle=float(raw_input('input angle\n'))
+	    koch(bob,k,k_angle)
+	
+	input_koch()
+	
+	bob.redraw()
+
 
 # 第14章 文件
 ## 14.1 持久化
@@ -706,3 +927,4 @@
 ### 大多数系统都有程序可以将一种格式转换成另一种，当然，也可以用repr()等自己写一个。
 ## 14.11 术语表
 ## 14.12 练习
+### 练习 14-6
