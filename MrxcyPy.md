@@ -635,7 +635,199 @@
 	input_koch()
 	
 	bob.redraw()
+# 第6章 有返回值函数
+## 6.1 返回值
+	def area(redius):
+		return math.pi * redius ** 2
+	
+	def area(redius):
+		temp = math.pi * redius ** 2
+		return temp
+### return语句后的语句不再被执行 → 无效代码(dead code)
+### 有返回值函数上应保证每个可能执行路径上都会遇到 *return*
+	def absolute_value(x):
+		if x < 0:
+			return -x
+		if x > 0:
+			return x
+		if x = 0:
+			return x
+	# abs()绝对值函数
+## 6.2 增量开发(incremental development)
+### 每次只测试一小部分代码
+### 考虑函数： 输入(形参)？  输出(返回值)？
+### → 确认简单正确的语法结构
+### → 确认形参的输入并打印出来确认正确 *这个代码叫 脚手架代码(scaffolding)*
+### → 返回结果
+## 6.3 组合
+### 在一个函数中可以调用其他函数
+	def circle_area(xc, yc, xp, yp):
+		redius = distance(xc, yc, xp, yp)
+		result = area(redius)
+		return result
 
+	"""简化"""
+	def circle_area(xc, yc, xp, yp)：
+		return area(distance(xc, yc, xp, yp))
+## 6.4 布尔函数
+	def is_divisible(x, y):
+		if x % y == 0:
+			return True
+		else:
+			return False
+
+	"""简化"""
+	def is_divisible(x, y):
+		return x % y == 0
+	
+	if is_divisble(x ,y): # is_divisible(x, y) == True 不必要
+		print 'x is divisble by y'
+## 6.5 再谈递归
+### 画栈图，从递归最里层开始向外推
+## 6.6 坚持信念
+### 假设调用的函数是正确的
+## 6.7 另一个示例
+	def fibonacci(n):
+		if n == 0:
+			return 0
+		elif n == 1:
+			return 1
+		else:
+			retuen fibonacci(n-1) + fibonacci(n-2)
+## 6.8 检查类型
+### 检查实参类型	
+	if not isinstance(x, int): # isinstance函数，检查实参类型
+		print '... is only defined for integers'
+	elif n < 0:
+		print '.... is not for negative integers'
+	elif n == 0:
+		return 1
+	else:
+		return n * factorial(n-1)
+### 上述被称作守卫代码(guardian code)，用作防止输入错误(前置条件)
+## 6.9 调试
+### 函数不能正常工作：
+#### ① 函数获得的实参有问题，每个前置条件没达到；
+#### ② 函数本身有问题，某个后置条件没达到；
+#### ③ 函数返回值有问题，或者使用的方式不正确
+### 脚手架代码：
+#### 对①：加print，显示实参值于类型，若没错，下一项
+#### 对③：在每个return前加print，显示返回值(手动检查返回值)，若没错，下一项
+#### 对③：检查*调用它的代码*，确保返回值正确使用，若没错，下一项
+#### 在函数开端和结尾加print语句,如下：
+	def factorial(n):
+		space = ' ' * (4 * n)
+		print space, 'factorial', n # 查看运行之前 n 的值
+		if n == 0:
+			print space, 'returning 1'
+			return 1
+		else:
+			recurse = factorial(n-1)
+			result = n * recurse
+			print space, 'returning', result # 查看运行后 result 的值
+			return result
+## 6.10 术语表
+## 6.11 练习
+### 6-1
+	"""比较x,y大小，返回1,0,-1"""
+	def compare(x,y):
+	    if x>y:
+    	    return 1
+    	elif x==y:
+    	    return 0
+    	elif x<y:
+    	    return -1
+
+	print(compare(2,1))
+### 6-2
+	"""求直角三角形斜边"""
+	import math
+
+	def hypotenuse(a,b):
+	    squared=a**2+b**2
+	    result=math.sqrt(squared)
+	    return result
+	    
+	print(hypotenuse(3,4))
+### 6-3
+	"""比较x,y,z大小，x<=y<=z为真"""
+	def is_between(x,y,z):
+	    return x<=y<=z
+
+	print(is_between(1,2,3))
+### 6-5
+	"""设计Ackermann函数"""
+
+	def ack(m,n):
+    	if m==0:
+    	    return n+1
+	    elif m>0 and n==0:
+	        return ack(m-1,1)
+	    elif m>0 and n>0:
+	        return ack(m-1,ack(m,n-1))
+	
+	def input_ack():
+	    input_m=float(input('please input m\n'))
+	    input_n=float(input('please input n\n'))
+	    result=ack(input_m,input_n)
+	    print('ack(',input_m,input_n,'):',result)
+
+	input_ack()
+### 6-6
+	"""用递归检查字符串是否是回文"""
+	def first(word):
+	    return word[0]
+
+	def last(word):
+    	return word[-1]
+	
+	def middle(word):
+	    return word[1:-1]
+	
+	def input_palindrome():
+	    input_word=str(input('please input word:\n'))    
+	    print (middle(input_word))
+	
+	def is_palindrome(word):
+	    """Returns True if word is a palindrome."""
+	    if len(word) <= 1:
+        return True
+	    if first(word) != last(word):
+	        return False
+	    return is_palindrome(middle(word))
+	           
+	
+	def input_is_palindrome():
+	    input_word=str(input('please input word:\n'))    
+	    print (is_palindrome(input_word))
+        
+	input_is_palindrome()
+### 6-7
+	"""判断a是否是b的乘方"""
+	def is_power(a,b):
+	    if a==1 and b!=0:
+    	    return True       
+    	elif b==1 or b==0 or a%b!=0:
+    	    return False
+    	elif a%b==0:        
+    	    return is_power(a/b,b)
+
+	print(is_power(-64,-4))
+### 6-8
+	"""求a和b的最大公约数"""
+	def gcd(a,b):
+	    if b==0:
+	        return a
+	    elif b!=0:
+	        r=a%b
+	        return gcd(b,r)
+	
+	def input_gcd():
+	    input_a=float(input('input a:\n'))
+	    input_b=float(input('input b:\n'))
+	    print('GCD: ',gcd(input_a,input_b))
+
+	input_gcd()
 
 # 第14章 文件
 ## 14.1 持久化
