@@ -1132,16 +1132,16 @@
 	    zipcoder: db"""
     
 	    shelf = shelve.open(zipcoder, 'c')
-	    for i in range(s_code, f_code+1):
-	        zip_list = scrip(i)
-	        zipcode = num_str(i, 5) 
-	        if len(zip_list) == 1:
-	            shelf[zipcode] = ()
-	        else:
-	            name = zip_list[1] 
-	            population = zip_list[2]  
-	            shelf[zipcode] = (name, population)
-	            print (zipcode, name, population)
+    	for i in range(s_code, f_code+1):
+        	zip_list = scrip(i)
+        	zipcode = num_str(i, 5) 
+        	if  zip_list == []:
+        	    shelf[zipcode] = ()
+        	else:
+        	    name = zip_list[0] 
+        	    population = zip_list[1]  
+        	    shelf[zipcode] = (name, population)
+        	print (zipcode, shelf[zipcode])
 	    
 	    shelf.close()
         
@@ -1203,9 +1203,9 @@
 	                # 得到最终人口数字就在列表第一个元素
 	                    
 	            if n == 0:
-	                zipcode_group = [UID]
-	            else:
-	                zipcode_group = [UID, name, population]
+                	zipcode_group = []
+            	else:
+                	zipcode_group = [name, population]
        
 	        return zipcode_group
 	       
