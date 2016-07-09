@@ -1120,3 +1120,108 @@
 ## 14.11 术语表
 ## 14.12 练习
 ### 练习 14-6
+	"""建立名为zipcoder的主模块用来存储及查询网上抓取的信息"""
+	import shelve
+
+	from zipcode_scrip import *
+
+	def store(s_code, f_code, zipcoder):
+    	"""将得到的列表中的信息存入一个数据库zipcoder中
+    	zip_list: list
+	    zipcoder: db"""
+    	
+	    shelf = shelve.open(zipcoder, 'c')
+    	for i in range(s_code, f_code+1):
+    	    zip_list = scrip(i)
+    	    zipcode = zip_list[0] 
+    	    if len(zip_list) == 1:
+    	        shelf[zipcode] = ()
+    	    else:
+    	        print (zip_list)
+    	        name = zip_list[1] 
+    	        population = zip_list[2]  
+    	        shelf[zipcode] = (name, population)
+    	
+    	shelf.close()
+    	    
+	def search(zipcode, zipcoder):
+    	"""利用数据库zipcoder，检索zipcode的地方信息
+	    zipcode: string
+	    zipcoder: db"""  
+	    
+	    shelf = shelve.open(zipcoder, 'r')    
+	
+	    return shelf[zipcode]
+		
+	if __name__ == '__main__':
+	    
+	    store(2000, 3000, 'zipcoder.db')
+		    
+	    print(search('02492', 'zipcoder.db'))
+	
+	"""建立名为zipcode_scrip子模块，用来从网站上抓取需要的信息"""
+	import urllib.request
+	from num_str import * #运用了num_str子模块
+	
+	def scrip(code):
+    	"""从网站上抽取code的zipcode，及与之对应的地方name，population，
+	    存入列表zipcode_group中
+	    s_code:int
+	    f_code:int
+	    zipcode_group: list"""
+	    zipcode_group = [] # 初始化zipname为空字典，用于存储zipcode与population
+	    try:     
+	        UID = num_str(code, 5)
+	        website = 'http://www.uszip.com/zip/' + UID
+	        conn = urllib.request.urlopen(website)
+	        n = 0
+           
+	        for line in conn:
+	                
+	            if b'<title>' in line:
+	                name = line.strip().decode()
+	                # 得到关于name的字符串
+	                    
+	                name = name.strip('zip cod </title>')
+	                # 去掉开头结尾的不需要的字符
+                        
+	            elif b'Total population' in line:
+                    
+	                n = 1
+                    
+	                p_raw = line.strip().decode() 
+	                # 得到关于population的长字符串
+	                    
+	                p_list = p_raw.split('Total population</dt><dd>')
+	                # 以'Total population</dt><dd>'为界，所需要的人口数字就在其后                
+                    
+	                p_list2 = p_list[1].split('<')
+	                # 取出所需人口数字所在的字符串，以'<span'为界断开其与尾部
+                    
+	                population = p_list2[0]
+	                # 得到最终人口数字就在列表第一个元素
+	                    
+	            if n == 0:
+	                zipcode_group = [UID]
+	            else:
+	                zipcode_group = [UID, name, population]
+       
+	        return zipcode_group
+	       
+	    except:
+	        print ('There are errors')
+             
+	
+	if __name__ == '__main__':
+	    print (scrip(0))
+
+	"""num_str子模块可以将数字在需要的高位上加0，然后返回其字符串"""
+	def num_str (num, x):
+    """补齐数字num高位上的零，以满足位数x要求, 并返回满足位数要求的字符串
+    	num: int
+    	x: int
+    	num_str: str"""
+
+    	num_str='0'*(x-len(str(num)))+str(num)
+    
+    	return num_str
