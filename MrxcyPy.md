@@ -1124,39 +1124,40 @@
 	import shelve
 
 	from zipcode_scrip import *
+	from num_str import *
 
 	def store(s_code, f_code, zipcoder):
-    	"""将得到的列表中的信息存入一个数据库zipcoder中
-    	zip_list: list
+    """将得到的列表中的信息存入一个数据库zipcoder中
+	    zip_list: list
 	    zipcoder: db"""
-    	
+    
 	    shelf = shelve.open(zipcoder, 'c')
-    	for i in range(s_code, f_code+1):
-    	    zip_list = scrip(i)
-    	    zipcode = zip_list[0] 
-    	    if len(zip_list) == 1:
-    	        shelf[zipcode] = ()
-    	    else:
-    	        print (zip_list)
-    	        name = zip_list[1] 
-    	        population = zip_list[2]  
-    	        shelf[zipcode] = (name, population)
-    	
-    	shelf.close()
-    	    
+	    for i in range(s_code, f_code+1):
+	        zip_list = scrip(i)
+	        zipcode = num_str(i, 5) 
+	        if len(zip_list) == 1:
+	            shelf[zipcode] = ()
+	        else:
+	            name = zip_list[1] 
+	            population = zip_list[2]  
+	            shelf[zipcode] = (name, population)
+	            print (zipcode, name, population)
+	    
+	    shelf.close()
+        
 	def search(zipcode, zipcoder):
-    	"""利用数据库zipcoder，检索zipcode的地方信息
+	    """利用数据库zipcoder，检索zipcode的地方信息
 	    zipcode: string
 	    zipcoder: db"""  
 	    
 	    shelf = shelve.open(zipcoder, 'r')    
-	
+
 	    return shelf[zipcode]
-		
+	
 	if __name__ == '__main__':
 	    
-	    store(2000, 3000, 'zipcoder.db')
-		    
+	    store(2915, 3000, 'zipcoder.db')
+	    
 	    print(search('02492', 'zipcoder.db'))
 	
 	"""建立名为zipcode_scrip子模块，用来从网站上抓取需要的信息"""
