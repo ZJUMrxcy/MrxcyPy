@@ -1226,3 +1226,238 @@
     	num_str='0'*(x-len(str(num)))+str(num)
     
     	return num_str
+# 第15章 类和对象
+## 15.1 用户定义类型
+### 用户定义的类型称为*类(class)*
+	class Point(object): # 表示新的类是一个Point，它是object的一种，object是一个内置类型。
+		"""Represents a point in 2-D space.""" # 解释这个类的用途
+	>>>print Point
+	<class '__main__.Point'> # 因为Point是在程序顶层定义的，它的全名是__main__.Point
+### 类对对象像一个创建对象的工厂
+	>>>blamk = Point()
+	>>>print blank #返回值是到一个Point对象的引用，我们将它赋值给变量blank
+	<__main__.Point instance at 0xb7e9d3ac>
+### 新建一个对象的过程称为*实例化(instantiation)*，而对象是这个类的一个*实例*
+## 15.2 属性
+### 可以用句点表示法来给实例赋值：
+	>>>blank.x = 3.0
+	>>>blank.y = 4.0
+### 在这个情况下，我们将值赋给了一个对象的有命名的元素。这些元素称为*属性(attribute)*
+### *对象图(object diagram)*
+			Point
+	blank → |x → 3.0|
+			|y → 4.0|
+### 变量blank引用向一个Point对象，它包含两个属性。每个属性引用一个浮点数。
+	>>>x = blank.x # 我们将其赋值给一个变量x，变量x与属性x并不冲突！
+	>>>print x
+	3.0
+### blank.x表示找到blank引用的对象，并取得它的x属性的值
+	>>>print '(%g, %g)' % (blank.x, blank.y)
+	(3.0, 4.0)
+	>>>distance = math.sqrt(blank.x**2 + blank.y**2)
+	>>>print distance
+	5.0
+
+	def print_point(p)
+		print '(%g, %g)' % (p.x, p.y)
+	>>>print_point(blank)
+	(3.0, 4.0)
+### 练习15-1
+	import math
+
+	class Point(object):
+	    """Represent a 2-D point"""
+
+	def distance_between_points(a, b):
+	    
+	    distance = math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2)
+	
+	    return distance
+	
+	a = Point()
+	b = Point()
+	
+	a.x = 0
+	a.y = 0
+	b.x = 1
+	b.y = 1
+
+	print(distance_between_points(a, b))
+## 15.3 矩形
+### ① 可以指定一个矩形的一个角落（或者中心点）、宽度以及高度；
+### ② 可以指定两个相对的角落
+	class Rectangle(object):
+		"""Represent a rectangle.
+		attributes: width, height, coner.
+		"""
+	
+	box = Rectangle()
+	box.width = 100.0
+	box.height = 200.0
+	box.corner = Point() # 作为另一个对象的属性，存在的对象是内嵌的
+	box.corner.x = 0.0
+	box.corner.y = 0.0
+## 15.4 作为返回值的实例
+### 返回Rectangle的中心点坐标：
+	def find_center(rect):
+		p = Point()
+		p.x =rect.corner.x + rect.width/2.0
+		p.y =rect.corner.y + rect.width/2.0
+		return p
+	
+	>>>center = find_center(box)
+	>>>print_point(center)
+	(50.0, 100.0)
+## 15.5 对象是可变的
+	box.width = box.width + 50
+	box.height = box.width + 100
+
+	def grow_rectangle(rect, dwidth, dheight):
+		rect.width += dwidth
+		rect.height += dheight
+	>>>print box.width
+	100.0
+	>>>print box.height
+	200.0
+	>>>grow_rectangle(box, 50, 100)
+	>>>print box.width
+	150.0
+	>>>print box.height
+	300.0
+### 在函数中，rect是box的别名，所以如果函数修改了rect，则box也改变。
+### 练习15-2
+	import math
+
+	class Point(object):
+    	"""Represent a 2-D point"""
+
+	def distance_between_points(a, b):
+    	
+	    distance = math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2)
+	
+	    return distance
+		
+	a = Point()
+	b = Point()
+
+	a.x = 0
+	a.y = 0
+	b.x = 1
+	b.y = 1
+	
+	class Rectangle(object):
+			"""Represent a rectangle.
+			attributes: width, height, coner.
+				"""
+	box = Rectangle()
+	box.width = 100.0
+	box.height = 200.0
+	box.corner = Point() # 作为另一个对象的属性，存在的对象是内嵌的
+	box.corner.x = 0.0
+	box.corner.y = 0.0
+	
+	def move_rectangle(rect, dx, dy):
+	    rect.corner.x = dx
+	    rect.corner.y = dy
+	    return rect.corner
+	
+	def print_point(p):
+	    print ('(%g, %g)' % (p.x, p.y))
+	
+	print_point(move_rectangle(box, 10.0, 10.0))
+## 15.6 复制
+### 别名的使用有时候会让程序更难阅读，一个修改其他地方也都要变。
+#### 使用别名的常用替代方案是复制对象。
+	>>>p1 = Point()
+	>>>p1.x = 3.0
+	>>>p1.y = 4.0
+	>>>import copy
+	>>>p2 = copy.copy(p1)
+### p1和p2包含有相同的数据，但是它们不是同一个Point对象。
+	>>>print_point(p1)
+	(3.0, 4.0)
+	>>>print_point(p2)
+	(3.0, 4.0)
+	>>>p1 is p2
+	False
+	>>>p1 == p2
+	False
+#### 在实例中==与is是相同的，检查对象的同一性，这种行为可以改变
+### 如果使用copy.copy复制一个Rectangle，只复制Rectangle对象，但并不复制内嵌的Point对象
+	>>>box2 = copy.copy(box)
+	>>>box2 is box
+	False
+	>>>box2.corner is box.corner
+	True
+### 这种行为被称为*浅复制(shallow copy)*，复制对象和其包含的任何引用，但不复制内嵌对象
+	box → | width → 100.0|                      |100.0  ← width | ← box2
+		  |height → 200.0|	    |x → 0.0|       |200.0  ← height|
+		  |corner           →   |y → 0.0|   ←             corner|
+#### 对象图(object diagram)
+### *深复制(deep copy)*
+	>>>box3 = copy.deepcopy(box)
+	>>>box3 is box
+	False
+	>>>box3.corner is box.corner
+	False
+#### box3与box是两个完全分开的对象
+### 练习 15-3
+ 	import math
+	import copy
+
+	class Point(object):
+    	"""Represent a 2-D point"""
+
+	def distance_between_points(a, b):
+    
+	    distance = math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2)
+	
+	    return distance
+	
+	a = Point()
+	b = Point()
+	
+	a.x = 0
+	a.y = 0
+	b.x = 1
+	b.y = 1
+	
+	class Rectangle(object):
+			"""Represent a rectangle.
+			attributes: width, height, coner.
+			"""
+	box = Rectangle()
+	box.width = 100.0
+	box.height = 200.0
+	box.corner = Point() # 作为另一个对象的属性，存在的对象是内嵌的
+	box.corner.x = 0.0
+	box.corner.y = 0.0
+	
+	def move_rectangle(rect, dx, dy):
+	    rect2 = copy.deepcopy(rect)
+	    rect2.corner.x = dx
+	    rect2.corner.y = dy
+	    return rect2
+	
+	def print_point(p):
+	    print ('(%g, %g)' % (p.x, p.y))
+	
+	box2 = move_rectangle(box, 10.0, 12.0)
+	print_point(box2.corner)
+	print(box.corner == box2.corner)
+## 15.7 调试
+### 试图访问一个并不存在的属性，会得到*AttributeError*:
+### 如果不清楚一个对象是什么类型：
+	>>>type(p)
+	<type '__mian_.Point'>
+### 如果你不确定一个对象是否拥有某个特点的属性，可以用内置函数hasattr:
+	>>>hasattr(p, 'x')
+	True
+	>>>hasattr(p, 'z')
+	False
+#### 第一个形参可以是任何对象；第二个形参是一个*字符串*，包含属性的名称。
+## 15.8 术语表
+## 15.9 练习
+### 练习 15-4
+	 
+	
