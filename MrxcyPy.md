@@ -1460,4 +1460,211 @@
 ## 15.9 练习
 ### 练习 15-4
 	 
+# 第16章 类和函数
+## 16.1 时间
+	class Time(object):
+		"""Represents the time of day.
+		attributes: hour, minute, second
+		"""
+	time = Time()
+	time.hour = 11
+	time.minute = 59
+	time.second = 30
+### 练习 16-1
+	class Time(object):
+		"""Represents the time of day.
+		attributes: hour, minute, second
+		"""
+	time = Time()
+	time.hour = 11
+	time.minute = 59
+	time.second = 0
 	
+	def print_time(t):
+	    print('%.2d: %.2d: %.2d' % (t.hour, t.minute, t.second))
+	
+	print_time(time)
+### 练习 16-2
+	class Time(object):
+		"""Represents the time of day.
+		attributes: hour, minute, second
+		"""
+	time = Time()
+	time.hour = 11
+	time.minute = 59
+	time.second = 0
+
+	def print_time(t):
+	    print('%.2d: %.2d: %.2d' % (t.hour, t.minute, t.second))
+	
+	def is_after(t1, t2):
+	    """接收两个时间变量t1、t2，
+	    如果t1在t2时间之后返回True，
+	    否则返回False
+	    """
+		    sum_t1 = 3600 * t1.hour + 60 * t1.minute + t1.second 
+	    sum_t2 = 3600 * t2.hour + 60 * t2.minute + t2.second 
+	    return (sum_t1 > sum_t2)
+		
+	time1 = Time()
+	time1.hour = 13
+	time1.minute = 45
+	time1.second = 12
+	
+	time2 = Time()
+	time2.hour = 13
+	time2.minute = 53
+	time2.second = 33
+
+	print(is_after(time1, time2))
+## 16.2 纯函数
+### 纯函数和修改器，根据这个得到开发计划，原型和补丁(prototype and patch)
+	def add_time(t1, t2):
+		sum = Time()
+		sum.hour = t1.hour + t2.hour
+		sum.minute = t1.minute + t2.minute
+		sum.second = t2.second + t2.second
+		return sum
+### 纯函数：除了返回一个值之外，并不修改作为实参传入的任何对象，也没有任何如显示值或用户输入之类的副作用
+	def add_time(t1, t2):
+		sum = Time()
+		sum.hour = t1.hour + t2.hour
+		sum.minute = t1.minute + t2.minute
+		sum.second = t2.second + t2.second
+
+		if sum.second >= 60:
+			sum.second -= 60
+			sum.minute += 1
+
+		if sum.minute >= 60:
+			sum.minute -= 60
+			sum.hour += 1
+
+		return sum
+### 虽然有了进位功能，但是函数已经变得臃肿起来了
+## 16.3 修改器
+### 有时候函数修改*传入的参数对象*很有用，这种情况下，修改对调用者是可见的，这样工作的函数称为*修改器(modifier)*
+	def increment(time, seconds):
+		time.second += seconds
+		
+		if time.second >= 60:
+			time.second -= 60
+			time.minute += 1
+
+		if time.minute >= 60:
+			time.minute -= 60
+			time.hour += 1
+### 如果seconds比60大很多上述函数无法正常工作
+### 练习 16-3
+	def increment(time, seconds):   
+    	num1 = seconds // 60
+    	time.second += seconds % 60
+    	time.minute += num1
+    	# print (num1, time.hour, time.minute, time.second)
+     
+	    if time.second >= 60:
+    	    time.second -= 60
+    	    time.minute += 1
+    	     
+    	num2 = time.minute // 60     
+	    time.minute = time.minute % 60
+	    time.hour += num2
+	    # print (num2, time.hour, time.minute, time.second)
+    
+	    if time.minute >= 60:
+	        time.minute -= 60
+	        time.hour +=1
+     
+	    time.hour = time.hour % 24
+    
+	    if time.hour < 24 and time.minute < 60 and time.second < 60:    
+	        return time
+	    else:
+	        print (time.hour, time.minute, time.second, '\nThere something wrong!')
+     
+	print_time(increment(time, 360000))
+
+### 只要合理的时候，尽量编写纯函数，*函数式编程风格*
+### 练习 16-4
+	def increment(time, seconds):   
+	    i_time = Time()
+    
+    	num1 = seconds // 60
+	    i_time.second = time.second + seconds % 60
+	    i_time.minute = time.minute + num1
+    	# print (num1, time.hour, time.minute, time.second)
+     
+	    if i_time.second >= 60:
+	        i_time.second -= 60
+	        i_time.minute += 1
+	         
+	    num2 = i_time.minute // 60     
+	    i_time.minute = i_time.minute % 60
+	    i_time.hour = time.hour + num2
+	    # print (num2, time.hour, time.minute, time.second)
+	    
+	    if i_time.minute >= 60:
+	        i_time.minute -= 60
+	        i_time.hour +=1
+		     
+	    i_time.hour = i_time.hour % 24
+		    
+	    if i_time.hour < 24 and i_time.minute < 60 and i_time.second < 60:    
+	        return i_time
+	    else:
+	        print (i_time.hour, i_time.minute, i_time.second, '\nThere something wrong!')
+	     
+	print_time(increment(time, 360000))
+## 16.4 原型和计划
+### 刚才展示的开发计划称为“原型和补丁”
+#### 对每个函数，编写一个可以进行基本计算的原型，测试它发现错误并打补丁
+#### 在不熟悉问题时很有效，但增量地修正可能会导致代码过度复杂
+### 另一种方法：*有规划开发*
+### 练习 16-5
+	def time_to_int(time):
+	    minutes = time.hour * 60 +time.minute
+	    seconds = minutes * 60 +time.second
+	    return seconds
+
+	def int_to_time(seconds):
+	    time = Time()
+	    minutes, time.second = divmod(seconds, 60)
+	    time.hour, time.minute = divmod(minutes, 60)
+	    return time
+	    
+	def increment(time, seconds):   
+	    i_time = Time()
+	    i_seconds = time_to_int(time) + seconds
+	    i_time = int_to_time(i_seconds)
+		    
+	    if i_time.hour < 24 and i_time.minute < 60 and i_time.second < 60:    
+	        return i_time
+	    else:
+	        print (i_time.hour, i_time.minute, i_time.second, '\nThere something wrong!')
+	     
+	print_time(increment(time_t, 3600))
+#### 这个程序并不能处理超过一天的时间，因为超过一天之后就不再只是60进制数了
+### 有时候把一个问题弄得更难（更通用），反而会让它更简单（因为特殊情况更少，以及更少的出错机会）
+## 16.5 调试
+### 当minute和second的值在0到60（不包含）之间以及hour为正时，是合法的。允许second拥有小数值，这种需求称为*不变式*，因为它们应当总是为真，不为真时必定有地方出错。
+### 可以编写一种检查错误的函数
+	def valid_time(time):
+		if time.hour < 0 or time.minute < 0 or time.second < 0:
+			return False
+		if time.minute >= 60 or time.second >= 60:
+			return False
+		return True
+### 可以放在每个函数的开头检查参数
+	def add_time(t1, t2)：
+		if not valid(t1) or not valid_time(t2):
+			raise ValueError, 'invaild Time object in add_time'
+		seconds = time_to_int(t1) + time_to_int(t2)
+		return int_to_time(seconds)
+### 或者使用*assert语句*，它会检查一个给定的不变式，当检查失败时抛出异常：
+	def add_time(t1, t2)：
+		assert valid(t1) and valid_time(t2)
+		seconds = time_to_int(t1) + time_to_int(t2)
+		return int_to_time(seconds)
+### assert语句区分处理了普通条件的代码和检查错误的代码
+## 16.6 术语表
+## 16.7 练习
