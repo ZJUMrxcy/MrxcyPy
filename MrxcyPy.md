@@ -1668,3 +1668,167 @@
 ### assert语句区分处理了普通条件的代码和检查错误的代码
 ## 16.6 术语表
 ## 16.7 练习
+# 第17章 类和方法
+## 17.1 面向对象特性
+### 面向对象编程
+#### 1. 程序由对象定义和函数定义组成，大部分计算都是用对象操作来表达
+#### 2. 每个对象定义对应真实世界的某些对象或概念，并且操作那个对象的函数对应真实世界中对象之间的交互方式
+### 每个函数都至少接受一个对象作为参数，这是*方法*的由来；
+### 一个方法，即和某个特定类相关联的函数
+### 方法和函数在语义上是一样的，但是在语法上有区别：
+#### 1. 方法定义写在类定义之中，更明确的表示类和方法的关联
+#### 2. 调用方法和调用函数的语法形式不同
+## 17.2 打印对象
+	class Time(object):
+		def print_time(self): # 方法的第一个形参用self是惯例
+			print '%.2d:%.2d:%.2d' % (self.hour, self.minute, self.second)
+### 这种惯例的原因是一个隐喻：
+#### 1. 函数调用的语法，print_time(start)，暗示函数是活动主体
+#### 2. 面向对象编程中，对象是活动主体，start.print_time()
+### 练习 17-1
+	class Time(object):
+    	def time_to_int(self):
+       		minutes = 60 * self.hour + self.minute
+       		seconds = 60 * minutes + self.second
+       		return seconds
+## 17.3 另一个示例
+	def int_to_time(seconds):
+    	time = Time()
+	    minutes, time.second = divmod(seconds, 60)
+	    time.hour, time.minute = divmod(minutes, 60)
+	    return time
+    
+	class Time(object):
+	    def print_time(self):
+	        print ('%.2d:%.2d:%.2d' % (self.hour, self.minute, self.second))
+	        
+	    def time_to_int(self):
+	        minutes = 60 * self.hour + self.minute
+	        seconds = 60 * minutes + self.second
+	     	return seconds
+	       
+	    def increment(self, seconds):
+	        seconds += self.time_to_int()
+	        return int_to_time(seconds)
+## 17.4 一个更加复杂的示例
+	def int_to_time(seconds):
+	    time = Time()
+	    minutes, time.second = divmod(seconds, 60)
+	    time.hour, time.minute = divmod(minutes, 60)
+	    return time
+	    
+	class Time(object):
+	    def print_time(self):
+	        print ('%.2d:%.2d:%.2d' % (self.hour, self.minute, self.second))
+	        
+	    def time_to_int(self):
+	        minutes = 60 * self.hour + self.minute
+	        seconds = 60 * minutes + self.second
+        return seconds
+       
+    	def increment(self, seconds):
+	        seconds += self.time_to_int()
+	        return int_to_time(seconds)
+	    
+	    def is_after(self, other):
+	        return self.time_to_int() > other.time_to_int()
+
+	>>> end.is_after(start)
+	True # 读起来像英语一样
+## 17.5 __init__方法 (特殊方法1)
+### 练习 17-2
+	class Point(object):
+	    def __init__(self, x=0, y=0):
+    	    self.x = x
+	        self.y = y
+
+	point = Point(1, 2)
+## 17.6 __str__方法 (特殊方法2)
+### 练习 17-3
+	class Point(object):
+	    def __init__(self, x=0, y=0):
+    	    self.x = x
+	        self.y = y
+	    
+	    def __str__(self):
+	        return '%d, %d' % (self.x, self.y)
+        
+	point = Point(1, 2)
+	print (point)
+### 编写新类时，可以先写__init__，再写__str__，以便调试
+## 17.7 操作符重载
+### 练习 17-4
+	class Point(object):
+	    def __init__(self, x=0, y=0):
+	        self.x = x
+	        self.y = y
+	    
+	    def __str__(self):
+	        return '%d, %d' % (self.x, self.y)
+	    
+	    def __add__(self, other):
+	        point_add = Point()
+	        point_add.x = self.x + other.x
+	        point_add.y = self.y + other.y
+	        return point_add
+        
+        
+	point1 = Point(1, 2)
+	point2 = Point(2, 3)
+	print (point1 + point2)
+## 17.8 基于类型的分发
+### 练习 17-5
+	class Point(object):
+	    def __init__(self, x=0, y=0):
+    	    self.x = x
+    	    self.y = y
+    	
+    	def __str__(self):
+    	    return '%d, %d' % (self.x, self.y)
+    	
+    	def __add__(self, other):
+    	    point_add = Point()
+    	    if isinstance(other, Point):
+    	        point_add.x = self.x + other.x
+    	        point_add.y = self.y + other.y
+    	        return point_add
+    	    else:
+    	        point_add.x = self.x + other[0]
+    	        point_add.y = self.y + other[1]
+    	        return point_add
+               
+	point1 = Point(1, 2)
+	point2 = Point(2, 3)
+
+	print (point1 + (2, 3))
+	print (point1 + point2)
+## 17.9 多态
+### 可以处理多个类型的函数称为*多态(polymorphic)*
+### 如果函数内部的所有操作都支持某种类型，那么这个函数就可以用作某种类型
+### 多态可以促进代码复用
+	# sum 对所有其元素支持加法的序列都适用
+	>>> t1 = Time(7, 43)
+	>>> t2 = Time(7, 41)
+	>>> t3 = Time(7, 37)
+	>>> total = sum([t1, t2, t3]) # 由于时间对象提供了add方法，则可以使用sum
+	>>> print total
+	23:01:00
+## 17.10 调试
+### 在__init__中初始化对象的全部属性是个好习惯
+### 如果并不清楚一个对象是否拥有某属性，可以使用*hasattr*
+### 另一种访问对象的属性方法是通过特别属性*__dict__*，将属性名称(str形式)映射到属性值：
+	>>> p = Point(2, 3)
+	>>> print p.__dict__
+	{'y': 3, 'x': 2}
+	
+	def print_attributes(obj):
+		"""接受一个对象obj,返回其拥有的属性，以及属性的值"""
+		for attr in obj.__dict__:
+			print attr, getattr(obj, attr) # getattr接受一个对象和属性名称(str形式),并返回属性的值
+### 为了调试方便print_attibutes()会很好用
+## 17.11 接口和实现
+### 面向对象设计的目标之一就是提高软件的可维护性
+### 练习 17-6
+## 17.12 术语表
+## 17.13 练习
+
