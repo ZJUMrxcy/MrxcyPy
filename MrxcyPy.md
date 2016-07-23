@@ -1833,5 +1833,179 @@
 ## 17.13 练习
 # 第18章 继承
 ## 18.1 卡片对象
+	class Card(object):
+    	"""Represents a standard playing card."""
+    
+    	def __init__(self, suit=0, rank=2):
+        	self.suit = suit
+        	self.rank = rank
+## 18.2 类属性
+### suit_names、rank_names被称为*类属性*，suit、name被称为*实例属性*
+	    suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
+    	rank_names = [None, 'Ace', '2', '3', '4', '5', '6', '7',
+        	          '8', '9', '10', 'Jack', 'Queen', 'King']    
+    
+    	def __str__(self):
+    	    return '%s of %s' % (Card.rank_names[self.rank], 
+    	                         Card.suit_names[self.suit])
+## 18.3 对比卡牌
+    	def __cmp__(self, other):
+        	t1 = self.suit, self.rank
+        	t2 = other.suit, other.rank
+	        return cmp(t1, t2)
+### 练习 18-1
+	class Time(object):
 
+    	def __init__(self, hour=0, minute=0, second=0):
+	        self.hour = hour
+    	    self.minute = minute
+	        self.second = second
 
+	    def __str__(self):
+	        return '%.2d:%.2d:%.2d' % (self.hour, self.minute, self.second)
+
+	    def __cmp__(self, other):
+	        t1 = self.hour, self.minute, self.second
+	        t2 = other.hour, other.minute, other.second
+	        return cmp(t1, t2)
+
+	time1 = Time(1, 2, 3)
+	time2 = Time(2, 3, 4)
+	print time1 < time2
+## 18.4 牌组
+	class Card(object):
+	    """Represents a standard playing card."""
+    
+	    def __init__(self, suit=0, rank=2):
+	        self.suit = suit
+	        self.rank = rank
+	
+	    suit_names = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
+	    rank_names = [None, 'Ace', '2', '3', '4', '5', '6', '7',
+	                  '8', '9', '10', 'Jack', 'Queen', 'King']    
+    
+	    def __str__(self):
+	        return '%s of %s' % (Card.rank_names[self.rank], 
+	                             Card.suit_names[self.suit])
+    
+	    def __cmp__(self, other):
+	        t1 = self.suit, self.rank
+	        t2 = other.suit, other.rank
+	        return cmp(t1, t2)
+	
+	class Deck(object):
+	
+	    def __init__(self):
+	        self.cards = []
+	        for suit in range(4):
+	            for rank in range(1, 14):
+	                card = Card(suit, rank)
+	                self.cards.append(card)
+## 18.5 打印牌组                
+	    def __str__(self):
+	        res = []
+	        for card in self.cards:
+	            res.append(str(card))
+	        return '\n'.join(res)
+
+	deck = Deck()
+	print deck
+# 18.6 添加、删除、洗牌和排序
+	class Deck(object):
+
+    	def __init__(self):
+    	    self.cards = []
+    		for suit in range(4):
+    	        for rank in range(1, 14):
+    	   	        card = Card(suit, rank)
+        	        self.cards.append(card)
+                
+    	def __str__(self):
+	        res = []
+	        for card in self.cards:
+	            res.append(str(card))
+	        return '\n'.join(res)
+	
+	    def pop_card(self):
+	        return self.cards.pop()
+	
+	    def add_card(self, card):
+	        self.cards.append(card) # 调用另一个函数却不做其他工作，称为饰面(veneer)
+	
+	    def shuffle(self):
+	        random.shuffle(self.cards)
+# 18.7 继承
+	class Deck(object):
+
+    	def __init__(self):
+        	self.cards = []
+        	for suit in range(4):
+        	    for rank in range(1, 14):
+        	        card = Card(suit, rank)
+        	        self.cards.append(card)
+                
+    	def __str__(self):
+	        res = []
+	        for card in self.cards:
+	            res.append(str(card))
+	        return '\n'.join(res)
+	
+	    def pop_card(self):
+	        return self.cards.pop()
+	
+	    def add_card(self,card):
+	        return self.cards.append(card)
+	
+	    def move_cards(self, hand, num):
+	        for i in range(num):
+	            hand.add_card(self.pop_card())
+		
+		def deal_cards(self, hands_num, num):
+     	    for i in range(hands_num):
+         	   handname = 'hand' + str(i + 1)
+         	   hand = Hand(handname)
+         	   self.move_cards(hand, num)
+            
+
+        return hand
+
+	class Hand(Deck):
+	    """Represents a hand of playing cards."""
+	    def __init__(self, label=''):
+	        self.cards = []
+	        self.label = label
+
+	hand = Hand('new hand')
+	
+	deck = Deck()
+	card = deck.pop_card()
+	hand.add_card(card)
+	
+	deck.deal_cards 
+	print hand
+## 18.8 类图
+### 1. 一个类的对象可能包含对其他类的对象的引用；*HAS-A*(有一个)
+### 2. 一个类可能继承自另一个类；*IS-A*(是一个)
+### 3. 一个类可能依赖于另一个类。
+	# 空心三角箭头  IS-A
+	# 标准箭头     HAS-A
+	# （*）     关联重数标记（数字，范围，*）
+## 18.9 调试
+	def find_defining_class(obj, meth_name):
+		for ty in type(obj).mro(): # MRO: method resolution order
+			if meth_name in ty.__dict__:
+				return ty
+	>>> hand = Hand()
+	>>> print find_defining_class(hand, 'shuffle')
+	<class 'Card.Deck'>
+### 每当你重载一个方法的时候，新方法的接口应当和旧方法一致。
+### 1. 接收同样的参数
+### 2. 返回相同的类型
+### 3. 服从同样的前置条件与后置条件
+## 18.10 数据封装
+### 1. 从编写函数、（如果需要的话）读写全局变量开始
+### 2. 一旦你的程序能够正确运行，查看全局变量与使用它们的函数的关联
+### 3. 将相关的变量封装成为对象的属性
+### 4. 将相关的函数转换为这个新类的方法
+## 18.11 术语表
+## 18.12 练习
