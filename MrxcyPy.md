@@ -2009,3 +2009,78 @@
 ### 4. 将相关的函数转换为这个新类的方法
 ## 18.11 术语表
 ## 18.12 练习
+# 第19章 案例研究：Tkinter
+## 19.1 GUI
+	from Gui import *
+
+	g = Gui()
+	g.title('Gui')
+	g.mainloop()
+
+	button = g.bu(text = 'Press me.')
+### 按钮(button)：控制
+### 画布(canvas)：图形
+### 输入框(entry)：输入
+### 滚动条(scrollbar)：显示
+### 画面框(frame)：本体(载基)
+## 19.2 按钮和回调
+	
+	from Gui import *
+
+	g = Gui()
+	g.title('Gui')
+
+
+	button = g.bu(text = 'Press me.')
+
+	label = g.la(text = 'Press the button')
+
+	def make_label():
+	    g.la(text = 'Thank you!')
+	
+	# command后的选项被称为回调，典型的事件驱动编程
+	button2 = g.bu(text = 'No, press me!', command = make_label)
+
+	g.mainloop()
+### 练习 19-1
+	from Gui import *
+
+	g = Gui()
+	g.title('Gui')
+
+	def make_button():
+	    g.bu(text = 'Press me, too!', command = make_label)
+    
+	def make_label():
+	    g.la(text = 'Well done!')
+	
+	button = g.bu(text = 'Press me.', command = make_button)
+
+	g.mainloop()
+## 19.3 画布部件
+### 练习 19-2
+	from Gui import *
+
+	g = Gui()
+	g.title('Gui')
+
+	def make_button():
+	    g.bu(text = 'Press me, too!', command = make_label)
+	    
+	def make_label():
+	    g.la(text = 'Well done!')
+	
+	button = g.bu(text = 'Press me.', command = make_button)
+	
+	g.mainloop()
+## 19.4 坐标序列
+	# 对角定点的方式称为边界盒
+	convas.rectangle([0, 0], [200, 100],
+					fill = 'blue', outline = 'orange', width = 10)
+	convas.oval([0, 0], [200, 100],
+				fill = 'blue', outline = 'orange', width = 10)	
+	convas.line([0, 0], [100, 200], [200, 100]
+				, width = 10)
+	convas.polygon([0, 0], [100, 200], [200, 100]
+					fill = 'blue', outline = 'orange', width = 10)
+## 19.5 更多部件
