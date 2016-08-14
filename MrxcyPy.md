@@ -828,6 +828,64 @@
 	    print('GCD: ',gcd(input_a,input_b))
 
 	input_gcd()
+# 第7章 迭代(iteration)
+## 7.1 多重赋值(multiple assignment)
+### 谨慎使用，降低可读性
+	>>>a = 5
+	>>>b = a
+	>>>a = 3
+## 7.2 更新变量(update)
+	>>>x = 0 #初始化(initialization)
+	>>>x = x + 1 
+## 7.3 while语句
+### while condition(计算，True:执行loop，False:执行后续语句)
+## 7.4 break语句
+### if ...
+### break : 跳出循环
+## 7.5 平方根
+### 练习 7-2
+	import math
+
+	def square_root(a,s): 
+	    x=s
+	    while True:
+	        y=(x+a/x)/2
+	        if abs(y-x)<0.0000001:
+	            break
+	        x=y        
+	    return x
+    
+	def input_square_root():
+	    while True:
+	        input_a=float(input('input nubmer:'))
+	        input_s=float(input('input estimated value:'))        
+	        input_line=str(input('OK?(Y/N)\n'))
+	        if input_line=='Y':
+	            break
+	        elif input_line=='N':
+	            input_square_root()
+	    print(square_root(input_a,input_s))
+                  
+
+	def test_square_root():
+	    while True:
+	        s_test=3.0
+	        a_test=float(input('>'))
+	        if a_test<0:
+	            break  
+	        result_test=square_root(a_test,s_test)
+	        compared_test=math.sqrt(a_test)
+	        dif=abs(result_test-compared_test)
+	        print(a_test,result_test,compared_test,dif)
+## 7.6 算法
+### ***算法***是程序设计的核心
+### 牛顿方法是算法的一个例子
+## 7.7 调试
+### ***二分调试***(debugging by bisection)
+### 利用程序的中点调试
+## 7.8 术语表
+
+
 
 # 第14章 文件
 ## 14.1 持久化
