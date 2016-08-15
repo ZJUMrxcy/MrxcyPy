@@ -884,9 +884,173 @@
 ### ***二分调试***(debugging by bisection)
 ### 利用程序的中点调试
 ## 7.8 术语表
+# 第8章 字符串
+## 8.1 字符串是一个字符的序列(sequence)
+	>>>fruit = 'banana'
+	>>>letter = fruit[1] #下标(index)，离字符串开头的偏移量，必须是整数
+## 8.2 len
+	>>>fruit[-1] 返回最后一个字母
+	>>>length = len(fruit)
+	>>>fruit[length - 1]
+## 8.3 使用for循环进行遍历(traversal)
+## 8.4 字符串切片(slice)
+## 8.5 字符串是不可变的(immutable)
+## 8.6 搜索
+### 遍历一个序列，当找到目标时返回
+## 8.7 循环和计数
+	word = 'banana'
+	count = 0
+	for letter in word:
+		if letter == 'a':
+			count += 1
+	print count
+## 8.8 字符串方法
+### ① find (搜索)
+	>>>'with a meo-moo here'.find('moo')
+	2
+	>>>title = 'with a meo-moo here' 
+	>>>title.find('Monty')
+	0 #若没有:返回‘-1’
+### ② join (合并)
+	>>>seq = ['1', '2', '3', '4', '5']
+	>>>sep = '+'
+	>>>sep.join(seq)
+	'1+2+3+4+5'
+	>>>dirs = '', 'user', 'bin', 'env'
+	>>>print ('C:'+ '\\'.join(dirs))
+	C:\user\bin\env
+### ③ lower(返回字符串的小写字母版)
+	>>>name = 'Gumby'
+	>>>names = ['gumby', 'smith', 'jones']
+	>>>if name.lower() in names: print 'Found it!'
+### ④ replace(多个字符查找替换)
+	>>>'This is a test'.replace('is', 'eez')
+	Theez eez a test
+### ⑤ split(拆分)
+	>>> '1+2+3+4+5'.split('+')
+	['1', '2', '3', '4', '5']
+### ⑥ strip(去除两侧空格或指定字符)
+	>>>'dictory.txt'.readline().strip()
+	
+	>>>line.strip('*j')
+### ⑦ translate(查找替换单个字符)
+	>>>from string import maketrans
+	>>>table = maketrans('cs', 'kz')
+	>>>translate(table)
+	'thiz iz an inkredible tezt'
+	>>>translate(table, 'l') #用table中的单个字符去替换，可选删除'l'
+## 8.9 操作符in(布尔操作符)
+## 8.10 字符串比较
+### 大写字母在小写字母之前(大写<小写)，其余按照字母排序
+## 8.11 调试
+## 8.12 术语表
+## 8.13 练习
+### 练习 8-1 
+	def cba():
+    	line=str(input('input word:'))
+	    x=0    
+	    for i in range(1,len(line)+1):
+	        x=x+1
+	        y=int(len(line)-x)
+	        print(line[y])
+
+	cba()
+### 练习 8-2
+	def abc():
+	    prefixes='JKLMNOPQ'
+	    suffix='ack'
+    
+	    for letter in prefixes:
+	        if letter=='O' or letter=='Q':
+	            print(letter+'u'+suffix)
+	        print(letter+suffix)
 
 
+	abc()
+### 练习 8-3
+	def fruit():
+    	fruit='banana'
+    	print(fruit[:])
 
+	fruit()
+### 练习 8-4
+	def find(word,letter,index):
+    	while index<len(word):
+        	if word[index]==letter:
+        		return index
+    	    index=index+1
+    	return -1
+### 练习 8-5
+	def count():
+	    word=str(input('input word:\n'))
+    	count_letter=str(input('input letter\n'))
+	    count=0
+	    for letter in word:
+	        if letter==count_letter:
+	            count=count+1
+	    print(count)
+
+	count()
+### 练习 8-6
+	def count():	
+	    word=str(input('input word:'))
+    	count_letter=str(input('input letter:'))
+	    index=int(input('start index:'))
+	    count1=0
+	    while index<len(word):
+	        if word[index]==count_letter:
+	            count1=count1+1
+	        index=index+1
+	    print(count1)
+
+	count()
+### 练习 8-7
+	def count():
+	    line=str(input('input word:'))
+    	letter=str(input('input letter:'))
+    	number=line.count(letter)
+    	print(number)
+
+	count()
+### 练习 8-10
+	def is_palindrome():
+	    line=str(input('input word:'))
+    	print(line[::-1])
+
+	is_palindrome()
+### 练习 8-11
+	def any_lowercasel(s):
+    	for c in s:
+        	if not c.islower():
+        	    return False
+    	return True
+
+	print(any_lowercasel('AADDDASS'))
+
+	print(any_lowercasel('aaaaaA'))
+### 练习 8-12
+	def rotate_word(letter,numcode):
+	    if letter.islower():
+    	    start_order=ord('a')
+	    elif letter.isupper():
+	        start_order=ord('A')     
+	    else:
+	        return letter
+	    mid_order=ord(letter)-start_order
+	    order=(mid_order+numcode)%26+start_order
+	    order_letter=chr(order)
+	    return order_letter
+
+	def print_rotate_word():
+	    word=str(input('input word:'))
+	    input_numcode=int(input('input numcode:'))
+	    res=''
+	    for letter in word:
+	        res+=rotate_word(letter,input_numcode)
+	    print (res)
+
+	if __name__=='__main__':
+	    print_rotate_word()
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
