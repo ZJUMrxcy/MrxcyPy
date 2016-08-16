@@ -1051,6 +1051,359 @@
 
 	if __name__=='__main__':
 	    print_rotate_word()
+# 第9章 案例分析：文字游戏
+## 9.1 读取单词列表
+	>>>fin = open('words.txt')
+	>>>print (fin)
+	<open file 'words.txt', mode 'r' at 0xb7f4b380> #'w':写入
+	>>>fin.readline() #从文件里读入字符，直到获得换行符为止
+	'aa\r\n' #\r:回车符号;\n:换行符
+	>>>fin.readline() #再次调用readline(),文件会继续向下读入
+	'aah\r\n'
+	>>>line = fin.readline()
+	>>>word = line.strip() #可以使用strip()去掉\r\n
+	>>>print (word)
+	aah
+	# 循环
+	fin = open('words.txt')
+	for line in fin:
+		word = line.strip()
+		print (words)
+### 练习 9-1
+	fin=open('words.txt')
+	for line in fin:
+    	word=line.strip()
+	    if len(word)>20:
+	        print(word)
+## 9.2 练习
+### 练习 9-2
+	def has_no_e(word):
+	    for letter in word:
+    	    if letter=='e':
+    	        return False
+	    return True
+        
+	def print_words():
+	    fin=open('words.txt')
+	    n=0
+	    for line in fin:
+	        word=line.strip()
+	        if has_no_e(word)==True:
+	            n=n+1
+	            print(word)
+	    print(n)
+
+	print_words()
+## 9.3 搜索
+### 问题识别(problem recognition),像计算机科学家一样思考
+### 想想以前有没有造过能用的轮子
+## 9.4 使用下标循环
+### 'for';'while';递归
+## 9.5 调试
+### 注意空字符串也有可能引起bug
+## 9.6 术语表
+## 9.7 练习
+### 练习 9-3
+	def avoids(word,a):
+	    for a_letter in a:
+	        if a_letter in word:
+		        return False
+	    return True 
+    
+	def has_no_e(word):
+	    for letter in word:
+	        if letter=='e':
+    	        return False
+	    return True
+        
+	def print_words():
+	    fin=open('words.txt')
+	    a=str(input('avoid letter:'))
+	    n=0
+	    for line in fin:
+	        word=line.strip()
+	        if avoids(word,a)==True:
+	            n=n+1
+	            print(word)
+	    print(n)
+
+	print_words()
+### 练习 9-4
+	def use_only(word,b):
+	    x=0
+	    for word_letter in word:
+	        if word_letter in b:
+	            x=x+1
+	    if x==len(word):
+	        return True
+	    return False
+
+	def avoids(word,a):
+	    for a_letter in a:
+	        if a_letter in word:
+	            return False
+	    return True 
+    
+	def has_no_e(word):
+	    for letter in word:
+	        if letter=='e':
+	            return False
+	    return True
+        
+	def print_words():
+	    fin=open('words.txt')
+	    a=str(input('use only letters:'))
+	    n=0
+	    for line in fin:
+	        word=line.strip()
+	        if use_only(word,a)==True:
+	            n=n+1
+	            print(word)
+	    print(n)
+
+	print_words()
+### 练习 9-5
+	def uses_all(word,c):
+	    x=0
+	    for c_letter in c:
+	        if c_letter in word:
+	            x=x+1
+	        if x==len(c):
+	            return True
+	    return False
+            
+	def uses_only(word,b):
+	    x=0
+	    for word_letter in word:
+	        if word_letter in b:
+	            x=x+1
+	    if x==len(word):
+	        return True
+	    return False
+
+	def avoids(word,a):
+	    for a_letter in a:
+	        if a_letter in word:
+	            return False
+	    return True 
+    
+	def has_no_e(word):
+	    for letter in word:
+	        if letter=='e':
+	            return False
+	    return True
+        
+	def print_words():
+	    fin=open('words.txt')
+	    a=str(input('uses all letters:'))
+	    n=0
+	    for line in fin:
+	        word=line.strip()
+	        if uses_all(word,a)==True:
+	            n=n+1
+	            print(word)
+	    print(n)
+
+	print_words()
+### 练习 9-6
+	def is_abecedarian(word):
+	    order=ord('a')
+	    for word_letter in word:
+	        if ord(word_letter)>=order:
+	            order=ord(word_letter)
+	        else:
+	            return False
+	    return True    
+    
+	def uses_all(word,c):
+	    x=0
+	    for c_letter in c:
+	        if c_letter in word:
+	            x=x+1
+	        if x==len(c):
+	            return True
+	    return False
+            
+	def uses_only(word,b):
+	    x=0
+	    for word_letter in word:
+	        if word_letter in b:
+	            x=x+1
+	    if x==len(word):
+	        return True
+	    return False
+
+	def avoids(word,a):
+	    for a_letter in word:
+	        if a_letter in a:
+	            return False
+	    return True 
+    
+	def has_no_e(word):
+	    for letter in word:
+	        if letter=='e':
+	            return False
+	    return True
+        
+	def print_words():
+	    fin=open('words.txt')
+	    n=0
+	    for line in fin:
+	        word=line.strip()
+	        if is_abecedarian(word)==True:
+	            n=n+1
+	            print(word)
+	    print(n)
+    
+	print_words()
+### 练习 9-7
+	def found_thr(word):
+	    if len(word)>=6:
+	        for i in range(0,len(word)-5):
+	            if word[i]==word[i+1] and word[i+2]==word[i+3] and word[i+4]==word[i+5]:
+	                return True
+	    return False
+            
+
+	def is_abecedarian(word):
+	    order=ord('a')
+	    for word_letter in word:
+	        if ord(word_letter)>=order:
+	            order=ord(word_letter)
+	        else:
+	            return False
+	    return True    
+    
+	def uses_all(word,c):
+	    x=0
+	    for c_letter in c:
+	        if c_letter in word:
+	            x=x+1
+	        if x==len(c):
+	            return True
+	    return False
+            
+	def uses_only(word,b):
+	    x=0
+	    for word_letter in word:
+	        if word_letter in b:
+	            x=x+1
+	    if x==len(word):
+	        return True
+	    return False
+
+	def avoids(word,a):
+	    for a_letter in word:
+	        if a_letter in a:
+	            return False
+	    return True 
+    
+	def has_no_e(word):
+	    for letter in word:
+	        if letter=='e':
+	            return False
+	    return True
+        
+	def print_words():
+	    fin=open('words.txt')
+	    n=0
+	    for line in fin:
+	        word=line.strip()
+	        if found_thr(word)==True:
+	            n=n+1
+	            print(word)
+	    print(n)
+    
+	print_words()
+### 练习 9-8
+	def first(word):
+	    return word[0]
+
+	def last(word):
+	    return word[-1]
+
+	def middle(word):
+	    return word[1:-1]
+
+	def is_palindrome(word):
+	    """Returns True if word is a palindrome."""
+	    if len(word) <= 1:
+	        return True
+	    if first(word) != last(word):
+	        return False
+	    return is_palindrome(middle(word))
+
+	def judge(num,y,z):
+	    s=str(num)[y:z]
+	    return is_palindrome(s)
+
+	def huiwen():
+	    num=100000
+	    while num<=999996:
+	        if (judge(num,2,6) 
+	           and judge(num+1,1,6) 
+	           and judge(num+2,1,5)
+	           and judge(num+3,0,6))==True:
+	            print(num)
+	        num=num+1
+
+	def judge2(num,y,z):
+	    num_str='0'*(6-len(str(num)))+str(num)
+	    s2=num_str[y:z]
+	    return is_palindrome(s2)
+
+	def huiwen2():
+	    num=000000
+	    while num<=999999:
+	        if (judge2(num,2,6) 
+	           and judge2(num+1,1,6) 
+	           and judge2(num+2,1,5)
+	           and judge2(num+3,0,6))==True:
+	            print(str(num))
+	        num=num+1
+
+
+	huiwen()
+	huiwen2()
+### 练习 9-9
+	def abba(num1,num2):
+	    s1=str(num1).zfill(2)
+	    s2=str(num2).zfill(2)
+	    if s1[:]==s2[::-1]:
+	        return True
+
+	def count_years_old(add,m):
+	    num1=0       
+	    num2=add
+	    n=0 
+	    while num1<84 and num2<100:
+	        if abba(num1,num2)==True:
+	            n=n+1
+	            if n==m:
+	                print('num1:',num1,'num2:',num2)
+	        num1=num1+1
+	        num2=num1+add
+
+	def check_years_old(add):
+	    num1=0       
+	    num2=add
+	    n=0 
+	    while num1<84 and num2<100:
+	        if abba(num1,num2)==True:
+	            n=n+1
+	            if n==8:
+	                return True
+	        num1=num1+1
+	        num2=num1+add
+
+	def print_years_old(m):
+	    add=15
+	    for i in range(40):
+	        if check_years_old(add)==True:
+	            count_years_old(add,m)
+	        add=add+1
+
+	print_years_old(6)            
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
