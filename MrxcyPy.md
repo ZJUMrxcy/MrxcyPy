@@ -1404,6 +1404,280 @@
 	        add=add+1
 
 	print_years_old(6)            
+# 第10章 列表
+## 10.1 列表是一个序列
+## 10.2 列表是可变的
+### ① 任何整型的表达式都可以用作下标
+### ② 如果尝试读写一个并不存在的元素会 IndexError
+### ③ 如果下标是负数，则从结尾处反过来数下标访问
+## 10.3 遍历一个列表
+### 注：嵌套列表仍被看做一个单独的元素，长度算1
+## 10.4 列表操作
+	>>>a = [1, 2, 3]
+	>>>b = [4, 5, 6]
+	>>>c = a + b
+	>>>c
+	[1, 2, 3, 4, 5, 6]
+	>>>a * 2
+	[1, 2, 3, 1, 2, 3]
+## 10.5 列表切片
+	>>>t[:] #列表副本，因为列表可变，创建副本十分有用
+	>>>t[1:3] = ['x', 'y'] #更新多个元素
+## 10.6 列表方法
+### 列表的方法除了pop()，全都没有返回值！
+### ① t.append() # 创造，不改变 相比之下'+'是新建列表
+### ② t.extend() # 改变，不创造
+### ③ t.sort(key, reverse) # 默认从低到高排列，或按照特性key(e.g. len)
+### ④ t.count() # 无返回值！
+### ⑤ t.index() # 下标
+### ⑥ t.insert(3, 'four') # 在下标3后插入'four'
+### ⑦ t.pop() # 移除下标后元素，默认最后一个，并返回该值
+### ⑧ t.remove() # 移除某值的第一个匹配项, 还有del后接切片下标
+### ⑨ t.reverse() # 反向存放
+## 10.7 映射(map)、过滤(filter)和化简(reduce)
+## 10.8 删除元素
+## 10.9 列表和字符串
+### 列表:值的序列；字符串:字符的序列
+### ① 避免使用list作变量名
+### ② 避免使用l，因为看起来像1
+### 1. list:把字符串拆成单个字母的列表
+### 2. split:把句子拆成单词
+### 3. join:把列表合并为字符串
+## 10.10 对象和值
+	>>>a = 'banana'
+	>>>b = 'banana'
+	>>>a is b
+	True
+	>>>a = [1, 2, 3]
+	>>>b = [1, 2, 3]
+	>>>a is b
+	False
+## 10.11 别名
+	>>>a = [1, 2, 3]
+	>>>b = a #b是a的别名(aliase)
+	>>>b is a
+	True
+	>>>b[0] = 17
+	>>>a
+	[17, 2, 3]
+### 避免使用别名！
+## 10.12 列表参数
+	>>>t1 = [1, 2]
+	>>>t2 = t1.append(3)
+	>>>t1
+	[1, 2, 3]
+	>>>t2
+	None
+	>>>t3 = t1 + [4]
+	>>>t3
+	[1, 2, 3, 4]
+## 10.13 调试
+### 1.大部分列表方法:①修改参数；②返回None
+### 2.有很多种方法达到目的，选择一种风格并坚持不变
+### 3.通过赋值来避免别名
+	>>>orig = t[:]
+	t.sort()
+## 10.14 术语表
+## 10.15 练习
+### 10-1
+	def nested_sum(a):
+	    s=0
+	    for item in a:
+	        s=s+sum(item)
+	    print(s)
+
+	nested_sum([[1,2],[3,4],[5,-6,-6]])
+### 10-2
+	def capitalize_all(t):
+	    res=[]
+	    for s in t:
+	        res.append(s.capitalize())
+	    return res
+
+	def capitalize_nested(m):
+	    M=[]
+	    for item in m:
+	        M.append(capitalize_all(item))
+	    print(M)
+
+	capitalize_nested([['a','b'],['c','d'],['e','f']])
+### 10-3
+	def accum(a):
+	    s=0
+	    add=[]
+	    for i in range(len(a)):
+	        s=sum(a[:i+1])
+	        add.append(s)
+	    print(add)
+
+	accum([1,2,3,4,5,6,7])
+### 10-4
+	def middle(a):
+	    del a[0]
+	    del a[-1]
+	    b=a
+	    return b
+
+	print(middle([1,2,3,4]))
+### 10-5
+	def chop(a):
+	    del a[0]
+	    del a[-1]
+
+	print(chop([1,2,3,4]))
+### 10-6
+	def is_sorted(a):
+	    for i in range(len(a)-1):
+	        if a[i]>a[i+1]:
+	            return False
+	    return True
+
+	print(is_sorted(['a','b','b']))
+### 10-7
+	def is_anagram(a,b):
+		a_t=list(a)
+	    b_t=list(b)
+	    a_t.sort()
+	    b_t.sort()
+	    a_t_str=''.join(a_t)
+	    b_t_str=''.join(b_t)
+	    if a_t_str==b_t_str:
+	        return True
+	    return False
+
+	print(is_anagram('and','dan'))
+### 10-8
+	import random
+
+	def has_duplicates(a):
+	    for i in a:
+	        num=a.count(i)
+	        if num>1:
+	            return True
+	    return False
+	def p(b):
+	    b_t=[]
+	    for i in range(b):
+	        b_num=random.randint(1,365)
+	        b_t.append(b_num)
+	    return has_duplicates(b_t)
+
+	def p_f(c):
+	    b=int(input('input people num:'))
+	    sum_p=0
+	    for i in range(c):
+	        if p(b)==True:
+	            sum_p+=1
+	    print(sum_p)
+	    print(sum_p/c*100)
+
+	p_f(100000)
+### 10-9
+	def remove_dupicates(a):
+	    t=a[:]    
+	    t.sort()
+	    for i in t:
+	        num=t.count(i)
+	        if num>1:
+	            t.remove(i) 
+	    return t
+    
+	print(remove_dupicates([1,2,3,4,0,0,1]))
+### 10-10
+	import time
+
+	def read_word1():
+	    t1=[]
+	    time1=time.time()
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        t1.append(word)
+	    time2=time.time()
+	    div1=time2-time1
+	    print(len(t1))
+	    print(t1[:10])
+	    print('div1:',div1)
+
+	def read_word2():
+	    t2=[]
+	    time3=time.time()
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        t2+=[word]
+	    time4=time.time()
+	    div2=time4-time3
+	    print(len(t2))
+	    print(t2[:10])
+	    print('div2:',div2)
+    
+
+
+	read_word1()
+	read_word2()
+### 10-11
+	import time
+
+	def bisect(a,t):
+	    t_half1=t[:len(t)//2]
+	    t_half2=t[len(t)//2:]    
+	    if a in t_half1:
+	        return True    
+	    elif len(t)//2>0:
+	        bisect(a,t_half2)
+    
+
+
+	def sect(a,t):
+	    for i in range(len(t)):
+	       if a==t[i]:
+	           return i
+
+	def words_list():
+	    fin=open('words.txt')
+	    t=[]
+	    for line in fin:
+	        word=line.strip()
+	        t.append(word)
+	    return t
+
+	time_s=time.time()
+	result=bisect('zoo',words_list())
+	time_e=time.time()-time_s
+	print(result)
+	print(time_e)
+
+	time_s=time.time()
+	result=sect('zoo',words_list())
+	time_e=time.time()-time_s
+	print(result)
+	print(time_e)
+### 10-12
+	def word_list():
+	    fin=open('words.txt')
+	    word_list=[]
+	    for line in fin:
+	        word=line.strip()
+	        word_list.append(word)
+	    return word_list
+
+	def find_reverse(t):
+	    a=t[:]
+	    n=0
+	    for line in a:
+	        l_list=list(line)
+	        l_list.reverse()
+	        n_line=''.join(l_list)
+	        if line!=n_line and n_line in a:
+	            print(line,n_line)
+	            a.remove(n_line)
+	            n+=1
+	    print(n)
+
+	find_reverse(word_list())
+### 10-13
+	
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
