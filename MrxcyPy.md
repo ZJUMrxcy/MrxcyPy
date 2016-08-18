@@ -1677,7 +1677,63 @@
 
 	find_reverse(word_list())
 ### 10-13
-	
+## 10-* 二分法
+### 前提：假设已经排好序
+	import bisect
+	bisect.bisect_left(a, x) #在a中查找x，x存在时返回x左下标；不存在返回应插入位置左下标
+	bisect.bisect_right(a, x) #在a中查找x，x存在时返回x右下标；不存在返回应插入位置右下标
+	bisect.insort_left(a, x) #将x插入列表a，x存在时插入x左侧位置；
+	bisect.insort_right(a, x) #将x插入列表a，x存在时插入x右侧位置；
+# 第11章 字典
+### 字典的下标：键 → 值 构成键值对
+	>>>vals = eng2sp.values() #vals是由字典eng2p里值构成的列表
+### 打印字典的顺序无法预料
+### 字典是散列表(hashtable)
+### 不论多少项，in操作符的花费时间都差不多
+## 11.1 使用字典作为计数器集合
+	"""直方图"""
+	def histogram(s):
+		d = dict()
+		for c in s:
+			if c not in d:
+				d[c] = 1
+			if c in d:
+				d[c] += 1
+		return d
+## 11.2 循环和字典
+### for循环遍历字典的键：键的出现没有特定顺序
+## 11.3 反向查找
+	def reverse_lookup(d, v):
+		for k in d:
+			if d[k] == v:
+				return k
+		raise ValueError
+## 11.4 字典和列表
+### 字典的键必须是可散列的(hashable)
+### 列表只能作为值
+## 11.5 备忘
+### 记录已经计算过的值，保存在一个字典中 → 备忘(memo)
+## 11.6 全局变量
+### (global.varible)
+### __main__ 特殊帧 中的变量：全局变量 常用作标志(flags)，一种布尔变量
+### 如果需要重新赋值：
+	def examples():
+		global been_called
+		been_called = True
+## 11.7 长整数
+### 123456789123123***L*** py2<type：long> py3<type:int>
+## 11.8 调试
+### ① 缩小输入：出现错误，缩小样本
+### ② 检查概要信息和类型：print 一些概要信息
+### ③ 编写自检逻辑，例如：求平均数（比较与最大最小值大小，看看是否有悖逻辑）
+### ④ 美化输出(pprint)
+### 脚手架代码！！！！
+## 11.9 术语表
+## 11.10 练习
+### 11-1
+
+
+
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
