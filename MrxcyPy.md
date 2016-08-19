@@ -1731,9 +1731,406 @@
 ## 11.9 术语表
 ## 11.10 练习
 ### 11-1
+	import time
+
+	def bisect(a,t):
+	    t_half1=t[:len(t)//2]
+	    t_half2=t[len(t)//2:]    
+	    if a in t_half1:
+	        return True    
+	    elif len(t)//2>0:
+	        bisect(a,t_half2)
+    
+	def sect(a,t):
+	    for i in range(len(t)):
+	       if a==t[i]:
+	           return i
+
+	def words_list():
+	    fin=open('words.txt')
+	    t=[]
+	    for line in fin:
+	        word=line.strip()
+	        t.append(word)
+	    return t
+    
+	def words_read(a):
+	    t1={}
+	    n=0
+	    fin=open('words.txt')
+	    for line in fin:
+	        n+=1
+	        word=line.strip()
+	        t1[word]=n
+	    return a in t1
+
+    
+	time_s=time.time()
+	result=bisect('and',words_list())
+	time_e=time.time()-time_s
+	print(result)
+	print(time_e)
+
+	time_s=time.time()
+	result=sect('and',words_list())
+	time_e=time.time()-time_s
+	print(result)
+	print(time_e)
+
+	time1=time.time()
+	result=words_read('and')
+	time2=time.time()
+	div=time2-time1
+	print(result)
+	print(div)
+### 11-2
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	print(histogram('brontosaurus'))
+### 11-3
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	def print_hist(h):
+	    h_sort=sorted(h.keys())
+	    print(h_sort)
+	    for c in h_sort:
+	        print (c,h[c])
+
+	h=histogram('brontosaurus')
+	print_hist(h)
+### 11-4
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	def print_hist(h):
+	    h_sort=sorted(h.keys())
+	    print(h_sort)
+	    for c in h_sort:
+	        print (c,h[c])
 
 
+	def reverse_lookup(d,v):
+	    fin=[]
+	    for k in d:
+	        if d[k]==v:
+	            fin.append(k)
+	    return fin
 
+
+	h=histogram('brontosauruss')
+	print(reverse_lookup(h,3))
+### 11-5
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	def print_hist(h):
+	    h_sort=sorted(h.keys())
+	    print(h_sort)
+	    for c in h_sort:
+	        print (c,h[c])
+
+
+	def reverse_lookup(d,v):
+	    fin=[]
+	    for k in d:
+	        if d[k]==v:
+	            fin.append(k)
+	    return fin
+
+
+	def invert_dict(d):
+	    inverse=dict()
+	    for key in d:
+	        inverse.setdefault(d[key],[]).append(key)
+	    return inverse
+        
+	h=histogram('parrot')
+	print(invert_dict(h))
+### 11-6
+	import time
+
+	def fibonacci(n):
+	    if n==0:
+	        return 0
+	    elif n==1:
+	        return 1
+	    else:
+	        return fibonacci(n-1)+fibonacci(n-2)
+
+	known={0:0,1:1}
+
+	def fibonacci2(n):
+	    if n in known:
+	        return known[n]
+	    res=fibonacci2(n-1)+fibonacci2(n-2)
+	    known[n]=res
+	    return res
+
+	time1=time.time()
+	fibonacci(50)
+	print(time.time()-time1)
+	print(fibonacci(50))
+
+	time2=time.time()
+	fibonacci2(50)
+	print(time.time()-time2)
+	print(fibonacci2(50))
+### 11-7
+	import time
+
+	def factorial(n):
+	    if n==0:
+	        return 1
+	    else:
+	        recurse=factorial(n-1)
+	        result=n*recurse
+	        return result
+
+	known={0:1}
+
+	def factorial2(n):
+	    if n in known:
+	        return known[n]
+	    res=n*factorial2(n-1)
+	    known[n]=res
+	    return res
+
+	time1=time.time()
+	factorial(100)
+	print(time.time()-time1)
+	print(factorial(100))    
+
+	time2=time.time()
+	factorial2(100)
+	print(time.time()-time2)
+	print(factorial2(100)) 
+### 11-8
+	import random
+	import math
+
+	"""制作一个质数表"""
+	def zhishu(m,n):                                            
+	    list_num = [n]    
+	    for i in range(m, n):        
+	        for num in range(2, int(math.sqrt(n))+1):            
+	            if i % num == 0 and i != num:                
+	                break            
+	            elif i % num != 0 and num == int(math.sqrt(n)):                
+	                list_num.append(i)    
+	    return list_num
+                
+	"""最大公约数，欧几里德算法"""
+	def gcd(a,b):
+	    if b==0:
+	        return a
+	    return gcd(b,a%b)
+
+	"""最大公约数、x、y，欧几里得扩展算法，求乘法逆元"""
+	def egcd(a,b):
+	    if b==0:
+	        return (1,0,a)
+	    (x,y,r)=egcd(b,a%b)
+	    tmp=x
+	    x=y
+	    y=tmp-(a//b)*y
+	    return (x,y,r)
+
+	"""取e"""
+	def ef(x):
+	    e_list=[]
+	    for e in range(x):
+	        if gcd(e,x)==1:
+	            e_list.append(e)
+	    return e_list
+    
+	"""随机取质数取p、q，得到N，根据egcd求出乘法逆元d"""
+	def miyao():
+	    p=random.choice(zhishu(100,999))
+	    q=random.choice(zhishu(100,999))
+	    N=p*q
+	    F_N=(p-1)*(q-1)
+	    e=random.choice(ef(F_N))
+	    d=egcd(e,F_N)[0]
+	    if d<0:
+	        d=(d%F_N+F_N)%F_N   
+	    return (d,e,N)    
+
+	"""加密明文a，得到密文b"""
+	def jiami(): 
+	    tulpe_miyao=miyao()
+	    d=tulpe_miyao[0]
+	    e=tulpe_miyao[1]   
+	    N=tulpe_miyao[2]    
+	    print('公开加密秘钥：',e)
+	    print('公开模数：',N)
+	    print('请记住你的秘钥：',d)
+	    a=int(input('请输入需要加密的信息(小于100000)：'))
+	    b=(a**e)%N
+	    print('加密信息：',b)
+
+	"""解密密文b，得到明文a"""
+	def jiemi():
+	    N=int(input('请输入公开模数：'))
+	    b=int(input('请输入需要解密的信息：'))
+	    d=int(input('请输入你的秘钥：'))
+	    a=(b**d)%N
+	    print('这段密文的意思是：',a)
+
+	jiemi()
+### 11-9
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	def xhas_duplicateds(list_t):
+	    t_d=histogram(list_t)
+	    for t in t_d:
+	        if t_d[t]>1:
+	            return True
+	    return False
+        
+    
+	print(xhas_duplicateds(['a','b','c','e','d']))  
+### 11-10
+	from bisect import bisect_left
+
+	def word_dict():
+	    d={}
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        d[word]=word
+	    return d
+
+	def word_list():
+	    d_list=[]
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        d_list.append(word)
+	    return d_list
+
+	def in_bisect(d_list, word):
+	    """Checks whether a word is in a list using bisection search.
+	
+	    Precondition: the words in the list are sorted
+	
+	    d_list: list of strings
+	    word: string
+	    """
+	    i = bisect_left(d_list, word)
+	    if i != len(d_list) and d_list[i] == word:
+	        return True
+	    else:
+	        return False
+        
+	def rotate_word(letter,numcode):
+	    if letter.islower():
+	        start_order=ord('a')
+	    elif letter.isupper():
+	        start_order=ord('A')     
+	    else:
+	        return letter
+	    mid_order=ord(letter)-start_order
+	    order=(mid_order+numcode)%26+start_order
+	    order_letter=chr(order)
+	    return order_letter
+
+	def list_rotate_word(word,numcode):
+	    res=''
+	    for letter in word:
+	        res+=rotate_word(letter,numcode)
+	    return res
+
+	def rotate_pairs():
+	    d=word_dict()
+	    d_list=word_list()
+	    for word in d:
+	        for i in range(1,14):
+	            rotated=list_rotate_word(word,i)
+	            if in_bisect(d_list,rotated):       
+	                print(word,i,rotated)
+
+	rotate_pairs()
+### 11-11
+	from pronounce import read_dictionary
+
+	from bisect import bisect_left
+
+	def word_list():
+	    d_list=[]
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip().lower()
+	        d_list.append(word)
+	    return d_list
+
+	def in_bisect(d_list, word):
+	    """Checks whether a word is in a list using bisection search.
+
+	    Precondition: the words in the list are sorted
+
+	    d_list: list of strings
+	    word: string
+	    """
+	    i = bisect_left(d_list, word)
+	    if i != len(d_list) and d_list[i] == word:
+	        return True
+	    else:
+	        return False
+
+	def homophones(a, b, phonetic):
+	    """Checks if words two can be pronounced the same way.
+	
+	    If either word is not in the pronouncing dictionary, return False
+	
+	    a, b: strings
+	    phonetic: map from words to pronunciation codes
+	    """
+	    if a not in phonetic or b not in phonetic:
+	        return False
+
+	    return phonetic[a] == phonetic[b]
+
+	def p_words(word,d_list,phonetic):
+ 
+	    word1=word[1:]
+	    if in_bisect(d_list,word1)==False:
+	        return False
+	    if not homophones(word, word1, phonetic):
+	        return False
+        
+	    word2=word[0]+word[2:]
+	    if in_bisect(d_list,word2)==False:
+	        return False
+	    if not homophones(word, word2, phonetic):
+	        return False
+        
+	    return True
+
+	if __name__=='__main__':
+	    d_list=word_list()
+	    phonetic = read_dictionary()  
+    
+	    for word in d_list:                
+	        if p_words(word,d_list,phonetic):
+	            print (word,word[1:],word[0]+word[2:])    
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
