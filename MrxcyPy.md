@@ -2131,6 +2131,384 @@
 	    for word in d_list:                
 	        if p_words(word,d_list,phonetic):
 	            print (word,word[1:],word[0]+word[2:])    
+## 11.x1 字典的方法
+### ① h.get('a', b)
+#### 如果'a'在字典h中，返回h['a']；如果不在，返回b
+### ② h.keys()
+#### 以列表的方式返回所有的键(不保证特定顺序)
+#### h.keys().sort()   sorted(h.keys())
+### ③ h.setdefault(key, val)
+#### 若key in h: 返回h[key]；若key not in h: 返回h[key] = val
+## 11.x2 RSA加密算法
+## 11.x3 random模块
+### random() 返回 0≤n<1之间任意n，其中0<n≤1
+### getrandbits(n) 以长整型返回n个随机数
+### uniform(a, b) 返回随机实数n，其中 a≤n<b
+### randrange([start], stop, [step]) 返回range(...)随机数
+### choice(seq) 返回seq中随机元素
+### shulffe(seq[, random]) 原地指定序列seq
+### sample(seq, n) 以seq中选n个随机且独立元素
+# 第12章 元组
+## 12.1 元组是不可变的(值的一个序列)
+	>>>t = 'a', 'b', 'c'
+	>>>t = ('a', 'b', 'c')
+### 只包含一个元素：
+	>>>t1 = 'a',
+	>>>t2 = ('a') # 这个不是tuple
+### 另一种
+	>>>t = tuple()
+	>>>t = tuple('lupins')
+	>>>print(t)
+	('l', 'u', 'p', 'i', 'n', 's')
+	>>>print(t[0])
+	'l'
+	>>>t[0] = 'A' # 错误！！不能修改，只能替换
+	>>>t = ('A',) + t[1:]
+	>>>print(t)
+	('A', 'u', 'p', 'i', 'n', 's')
+## 12.2 元组赋值
+	>>>a, b = b, a # 交换a，b
+	>>>addr = 'mrxcy@zju.edu.cn'
+	>>>uname, domain = addr.split('@')
+	>>>print(uname)
+	mrxcy
+## 12.3 作为返回值的元组
+	>>>t = divmod(7, 3)
+	>>>print(t)
+	(2, 1)
+	# 或元组赋值：
+	>>>quot, rem = divmod(7, 3)
+	>>>print(rem)
+	1
+
+	def min_max(t):
+		return min(t), max(t) # t是序列
+## 12.4 可变长参数元组
+	def printall(*args): # 以*开头的参数名会收集(gather)所有参数到元组上
+		print args
+	>>>printall(1, 2.0, '3')
+	(1, 2.0, '3')
+
+	>>>t = (7, 3)
+	>>>divmod(t) # 这是错误的，因为它不接受元组
+	>>>divmod(*t) # 加上*后可以分散(scatter)元组
+	(2, 1)
+## 12.5 列表和元组
+	>>>s = 'abc'
+	>>>t = [0, 1, 2]
+	>>>zip(s, t)
+	[('a', 0), ('b', 1), ('c', 2)] # zip的结果为返回元组列表（修改t）
+	
+	>>>zip('Anne', 'Elk')
+	[('A', 'E'), ('n', 'l'), ('n', 'k')] # 忽略了'e'
+## 12.6 字典和元组
+	>>>d = {'a':0, 'b':1, 'c':2}
+	>>>t = d.items() # items(): 返回一个无序的元组列表(键值对)
+	>>>print(t)
+	[('a', 0), ('c', 2), ('b', 1)]
+	
+	"""
+		for key, val in d.item():
+			print(val, key)
+	"""
+
+	>>>t = [('a', 0), ('c', 2), ('b', 1)]
+	>>>d = dict(t)
+	>>>print(d)
+	{'a':0, 'c':2, 'b':1} 
+
+	# 组合使用dict, zip
+	>>>d = dict(zip('abc', range(3)))
+	>>>print (d)
+	{'a':0, 'c':2, 'b':1} 
+## 12.7 比较元组
+	>>>(0, 1, 2) < (0, 3, 4)
+	True
+	>>>(0, 1, 20000) < (0, 3, 4)
+	True
+	
+	# DSU模式： 修饰(Decorate) → 排序(Sort) → 去修饰(Undecorate)
+## 12.8 序列的序列
+## 12.9 调试
+### 数据结构：列表、字典、元组
+### 复合数据结构：元组的列表、元组为键列表为值的字典(容易导致结构错误)
+	structshape()
+	from structshape import stractshape
+## 12.10 术语表
+## 12.11 练习
+### 12-1
+	# 可变长参数
+	def sumall(*d):
+	    for i in range(len(d)-1):
+	        sum_d=sum(d[0:2])
+	        a=sum_d,        
+	        d=a+d[2:]
+	    return sum_d
+
+
+	d=1,2,3,4,5,6,7
+	print(sumall(*d))
+### 12-2
+    import random
+
+	def sort_by_length(words):
+	    t=[]
+	    for word in words:
+	        t.append((len(word),random.random(),word))
+    
+	    t.sort(reverse=True) #reverse=True,告诉sort以降序排列
+    
+	    res=[]
+	    for length,band,word in t:
+	        res.append(word)
+	    return res
+
+
+	def words_list():
+	    words=[]
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        words.append(word)
+	    return words
+
+	words=words_list()
+	print(sort_by_length(words))
+### 12-3
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	def most_frequent(line):
+	    t=[]
+	    h=histogram(line)
+	    for c in h:
+	        t.append((h[c],c))
+    
+	    t.sort(reverse=True)
+	    
+	    return t
+
+	def read_file(filename):
+	    return open(filename).read()
+
+	if __name__=='__main__':
+	    s=read_file('毛泽东选集(全四卷).txt')
+	    r=most_frequent(s)
+	    i=0
+	    for x in r:
+	        i+=1
+	        print(x)
+	        if i==20:
+	            break
+### 12-4
+	def words_list():
+	    words=[]
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        words.append(word)
+	    return words
+
+	def anagram(s):
+	    d_a={}
+	    for word in s:
+	        word_n=tuple(sorted(tuple(word)))
+	        if word_n not in d_a:
+	            d_a[word_n]=[word] 
+	        else:
+	            d_a[word_n].append(word)
+	    return d_a
+
+	def sort_r(d):
+	    list_d_s=[]
+	    for key in d:
+	        list_d_s.append((len(d[key]),d[key]))
+    
+	    list_d_s.sort(reverse=True)
+	    
+	    r_s=[]    
+	    for length,list_d in list_d_s:
+	        r_s.append(list_d)
+        
+	    return r_s
+    
+    
+    
+	if __name__=='__main__':
+	    s=words_list()
+	    d=anagram(s)
+	    r=sort_r(d)
+	    for key in r:
+	        if len(key)>1:
+	            print(key)
+### 12-5
+	def words_list(): #取出文件中的单词，并放置于一个列表里
+	    words=[]
+	    fin=open('words.txt')
+	    for line in fin:
+	        word=line.strip()
+	        words.append(word)
+	    return words
+
+	def anagram(s): #找出字典s中所有的回文（包括不是回文的单词），返回含列表的字典
+	    d_a={}
+	    for word in s:
+	        word_n=tuple(sorted(tuple(word)))
+	        if word_n not in d_a:
+	            d_a[word_n]=[word] 
+	        else:
+	            d_a[word_n].append(word)
+	    return d_a
+
+	def compare(word1,word2):  #比较两个单词（word1,word2）是否可以经过一次字母换位相互转换
+	    t1=list(word1)
+	    t2=list(word2)
+	    n=0
+	    for i in range(len(t1)):
+	        if t1[i]!=t2[i]:
+	            n+=1
+	    if n==2:
+	        return True
+
+	def list_a(d): #输入一个列表d，把其中的元素两两组队且不重复的返回成一个包含元组的列表d_l
+	    d_l=[]
+	    for i in range(len(d)):
+	        for j in range(i+1,len(d)):
+	            d_l.append((d[i],d[j]))
+	    return d_l
+
+	def metathesis(l): #输入一个列表，把它list_a化，将比较后正确的单词对以元组的形式放入列表res中
+	    res=[]
+	    d_m=list_a(l)
+	    for m_key in d_m:
+	        if compare(*m_key):
+	            res.append(m_key)
+	    return res
+    
+	if __name__=='__main__':
+	    s=words_list()
+	    d=anagram(s)
+	    for key in d:
+	        if len(d[key])>1:
+	            x=metathesis(d[key])
+	            if x!=[]:
+	                print(x)
+### 12-6(standard)
+	def make_word_dict():
+	    """Reads the words in words.txt and returns a dictionary
+	    that contains the words as keys."""
+	    d = dict()
+	    fin = open('words.txt')
+	    for line in fin:
+	        word = line.strip().lower()
+	        d[word] = word
+	
+	    # have to add single letter words to the word list;
+	    # also, the empty string is considered a word.
+	    for letter in ['a', 'i', '']:
+	        d[letter] = letter
+	    return d
+
+
+	"""memo is a dictionary that maps from each word that is known
+	to be reducible to a list of its reducible children.  It starts
+	with the empty string."""
+
+	memo = {}
+	memo[''] = ['']
+
+
+	def is_reducible(word, word_dict):
+	    """If word is reducible, returns a list of its reducible children.
+
+	    Also adds an entry to the memo dictionary.
+
+	    A string is reducible if it has at least one child that is 
+	    reducible.  The empty string is also reducible.
+
+	    word: string
+	    word_dict: dictionary with words as keys
+	    """
+	     # if have already checked this word, return the answer
+	    if word in memo:
+	        return memo[word]
+
+	    # check each of the children and make a list of the reducible ones
+	    res = []
+	    for child in children(word, word_dict):
+	        t = is_reducible(child, word_dict)
+	        if t:
+	            res.append(child)
+
+	    # memoize and return the result
+	    memo[word] = res
+	    return res
+
+	
+	def children(word, word_dict):
+	    """Returns a list of all words that can be formed by removing one letter.
+
+	    word: string
+	
+	    Returns: list of strings
+	    """
+	    res = []
+	    for i in range(len(word)):
+	        child = word[:i] + word[i+1:]
+	        if child in word_dict:
+	            res.append(child)
+	    return res
+
+
+	def all_reducible(word_dict):
+	    """Checks all words in the word_dict; returns a list reducible ones.
+
+	    word_dict: dictionary with words as keys
+	    """
+	    res = []
+	    for word in word_dict:
+	        t = is_reducible(word, word_dict)
+	        if t != []:
+	            res.append(word)
+	    return res
+
+
+	def print_trail(word):
+	    """Prints the sequence of words that reduces this word to the empty string.
+
+	    If there is more than one choice, it chooses the first.
+
+	    word: string
+	    """
+	    if len(word) == 0:
+	        return
+	    print (word,)
+	    t = is_reducible(word, word_dict)
+	    print_trail(t[0])
+
+
+	def print_longest_words(word_dict):
+	    words = all_reducible(word_dict)
+
+	    # use DSU to sort by word length
+	    t = []
+	    for word in words:
+	        t.append((len(word), word))
+	    t.sort(reverse=True)
+
+	    # print the longest 5 words
+	    for length, word in t[0:5]:
+	        print_trail(word)
+	        print ('\n')
+
+
+	if __name__ == '__main__':
+	    word_dict = make_word_dict()
+	    print_longest_words(word_dict)
+	
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
