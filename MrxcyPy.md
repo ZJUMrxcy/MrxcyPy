@@ -2508,7 +2508,329 @@
 	if __name__ == '__main__':
 	    word_dict = make_word_dict()
 	    print_longest_words(word_dict)
+# 第13章 案例研究:选择数据结构
+## 13.1 单词频率分析
+	from bisect import bisect_left
+	def in_bisect(word_list, word):
+		i = bisect_left(word_list, word)
+		if i != len(word_list) and word_list[i] == word:
+			return True
+		else:
+			return False
+## 13.2 随机数
+### random模块
+## 13.3 单词直方图
+### 字符串不可变：e.g.strip, lower
+## 13.4 最常用的单词
+### 寻找最常用的单词可以用DSU模式
+## 13.5 可选形参
+	def print_most_common(hist, num=10)
+## 13.6 字典减法
+	def subtract(d1, d2):
+		res = dict()
+		for key in d1:
+			if key not in d2:
+				res[key] = None
+		return res
+## 13.7 随机单词
+### bisect 模块
+## 13.8 马尔可夫分析
+## 13.9 数据结构
+### ① 如何选择前缀
+### ② 如何选择后缀
+### ③ 如何选择前→后映射
+### i 实现的难易:先选择最易实现 
+### → ii 运行时间:使用模块time判断
+### → iii 存储空间:前二者都实现，再比较
+### 分析与生成这两个阶段可以使用不同的数据结构
+## 13.10 调试
+### 对付一个困难的bug:
+#### ① 阅读；② 运行(修改)；③ 沉思；④ 回退(重构)
+## 13.11 术语表
+## 13.12 练习
+### 13-1
+	import string
+
+	#13-1
+	def set_word(filename):
+	    t=[]
+	    t_f=[]
+	    fin=open(filename)
+    
+	    for line in fin:
+	        sentence=line.strip().lower()
+	        #将按照换行符分割的句子（段落）去掉头尾，并且小写化
+        
+	        pp=list(string.punctuation)+['‘','’','“','”','，','。']
+	        #设置一个包含要去掉的标点的列表库        
+        
+	        for y in pp:
+	            sentence=sentence.replace(y,'')#将要去掉的标点用None替换
+	        t.append(sentence)#将替换后的句子加入列表t中
+    
+	    for sentence in t:
+        
+	        x=sentence.split(' ')
+	        #取出t中的句子，按照空格分割成小列表，去除空列表，并组合成最终列表t_f
+	        if x!=['']:
+	            t_f+=x
+    
+	    return t_f
+
+	print(set_word('The Book of Lost Things.txt'))
+### 13-2
+	import string
+
+#13-1
+	def set_word(filename):
+	    t=[]
+	    t_f=[]
+	    fin=open(filename)
+    
+	    for line in fin:
+	        sentence=line.strip().lower()
+	        #将按照换行符分割的句子（段落）去掉头尾，并且小写化
+        
+	        pp=list(string.punctuation)+['‘','’','“','”','，','。']
+	        #设置一个包含要去掉的标点的列表库        
+        
+	        for y in pp:
+	            sentence=sentence.replace(y,'')#将要去掉的标点用None替换
+	        t.append(sentence)#将替换后的句子加入列表t中
+    
+	    for sentence in t:
+        
+			x=sentence.split(' ')
+	        #取出t中的句子，按照空格分割成小列表，去除空列表，并组合成最终列表t_f
+	        if x!=['']:
+	            t_f+=x
+	    
+	    return t_f
 	
+	#13-2
+	def count_word(list_c):
+	    list_count=[]
+	    
+	    list_f=[]
+	    
+	    for word in list_c:
+	        
+	        if word not in list_count:
+            
+	            list_count.append(word)
+	            
+	            num=list_c.count(word)
+	            
+	            list_f.append((num,word))
+            
+	    list_f.sort(reverse=True)
+	
+	    return list_f
+	    
+	def invert_dict(d):
+	    inverse=dict()
+	    for key in d:
+	        val=d[key]
+	        inverse.setdefault(val,[]).append(key)
+	        inverse[val]=inverse[val][0]
+	    return inverse
+	
+	if __name__=='__main__':
+    
+	    list_c=set_word('The Book of Lost Things.txt')
+	    list_f=count_word(list_c)    
+	    
+	    d=dict(list_f)
+	    d_v=invert_dict(d)
+	    
+	    print(sum(d))
+	    print(d_v,'\n',len(d_v),sum(d_v.values()))
+### 13-5
+	import random
+
+	def histogram(s):
+	    d=dict()
+	    for c in s:
+	        d[c]=d.get(c,0)+1
+	    return d
+
+	def choose_from_hist(t):
+	    hist=histogram(t)
+	    x=[]
+	    for e in hist:
+	        y=hist[e]
+	        z=str(e)
+	        for i in range(y):
+	            x.append(z)
+	    return random.choice(x)
+
+
+	print(choose_from_hist(['a','a','b']))
+### 13-7
+	import string
+	import random
+
+
+	def process_file(filename, skip_header):
+	    """Makes a histogram that contains the words from a file.
+	
+	    filename: string
+	    skip_header: boolean, whether to skip the Gutenberg header
+   
+	    Returns: map from each word to the number of times it appears.
+	    """
+	    hist = {}
+	    fp = open(filename)
+
+	    if skip_header:
+	        skip_gutenberg_header(fp)
+
+	    for line in fp:
+	        process_line(line, hist)
+	    return hist
+
+
+	def skip_gutenberg_header(fp):
+	    """Reads from fp until it finds the line that ends the header.
+	
+	    fp: open file object
+	    """
+	    for line in fp:
+	        if line.startswith('*END*THE SMALL PRINT!'):
+	            break
+
+
+	def process_line(line, hist):
+	    """Adds the words in the line to the histogram.
+
+	    Modifies hist.
+	
+	    line: string
+	    hist: histogram (map from word to frequency)
+	    """
+	    # replace hyphens with spaces before splitting
+	    line = line.replace('-', ' ')
+    
+	    for word in line.split():
+	        # remove punctuation and convert to lowercase
+	        word = word.strip(string.punctuation + string.whitespace)
+	        word = word.lower()
+
+	        # update the histogram
+	        hist[word] = hist.get(word, 0) + 1
+
+	import bisect 
+
+	def accum(a):
+	    s=0
+	    add=[]
+	    for i in range(len(a)):
+	        s=sum(a[:i+1])
+	        add.append(s)
+	    return add
+
+	def random_word(hist):
+	    """Chooses a random word from a histogram.
+
+	    The probability of each word is proportional to its frequency.
+	    """
+	    t = list(hist.keys())
+	    s=[]
+    
+	    for word in t:
+	        s.append(hist[word])
+	    s_f=accum(s)
+	    
+	    x=random.randint(1,s_f[-1]) 
+	    index=bisect.bisect(s_f,x)
+	    res=t[index]
+	    return res
+
+
+	if __name__ == '__main__':
+	    hist = process_file('Emma.txt', skip_header=True)
+
+	    print ("\n\nHere are some random words from the book")
+	    for n in range(100):
+	        print (random_word(hist),)
+### 13-8
+	def word_read(filename):
+	    """读入一个文档的文件名，将其转化为列表格式，若其为空文档，列表为空列表"""
+	    if filename == '':
+	        word_list = []
+	    else:
+	        word_list = []
+	        
+	        fin = open(filename)
+	
+	        for line in fin:
+	            line.replace('-',' ')
+	            for word in line.split():
+	                word = word.strip()
+	                word = word.lower()
+	                word_list.append(word)
+    
+	    return word_list
+
+	def markef_word_map(w_filename,w_order = 2):
+	    """读入一个文档的列表格式，对其进行马尔科夫分析（默认2度），返回对应的字典"""
+    
+	    #初始化
+	    w_list = word_read(w_filename) #读入文件列表
+	    w_dict = {} #初始化最后的字典
+	    w_key_list = [] #初始化过渡表格
+    
+	    #将列表格式的文档中的元素按度数取出，以元组形式放入过渡表格以备用作字典的键
+	    for i in range((len(w_list)//w_order)*w_order-w_order):
+	        w_key_list.append(tuple(w_list[i:i+w_order]))
+    
+	    #迭代，利用键值列表与原文档列表对字典进行赋值
+	    for j in range(len(w_key_list)):
+	        front_list = w_key_list[j]
+        
+	        if front_list not in w_dict:
+	            w_dict[front_list] = [w_list[j+w_order]] #若不存在，创造映射
+	        else:
+	            w_dict[front_list].append(w_list[j+w_order]) #若存在，添加值到映射表格
+    
+	    return w_dict   
+
+	import random
+	
+	def rand_txt(r_filename,r_filename2 = '',order = 2,n = 20):    
+	    """"读入一个文档(或两个，默认另一个为空)，对其进行马尔科夫分析（默认2度），
+	    并创建随机文档（默认迭代20次）"""
+    
+	    r_dict = markef_word_map(r_filename,order)
+	    r_dict2 = markef_word_map(r_filename2,order)
+	    r_dict.update(r_dict2)
+    
+	    #对文档进行马尔科夫分析，并返回映射字典
+	    r_list = list(r_dict.keys()) #将映射字典中的键转化为列表，方便随机取用
+
+	    #初始化    
+	    start_tup = random.choice(r_list) #在键列表中随机文字（元组），作为随机文档开头
+	    res_tup = start_tup #初始化结果文档（元组），开始键
+	    follow_tup = tuple() #初始化过渡文字（元组），尾随键
+    
+	    #迭代，利用映射字典与开始键，产生尾随键与尾随值，对结果文档（列表）进行赋值
+	    for i in range(n):
+	        follow_tup = (random.choice(r_dict[start_tup]),)
+	        res_tup += follow_tup        
+	        start_tup = res_tup[i+1:]
+	        res_list = list(res_tup)
+
+	    return res_list    
+
+	def print_rand_txt(p_list):
+	    """遍历随机文档（列表），取出元素组合为文档"""
+	    for line in p_list:
+	        print(line,end =' ')
+        
+	if __name__ == '__main__':
+    
+	    print_rand_txt(rand_txt('Emma.txt',\
+	    'The Book of Lost Things.txt',order = 5,n = 100))
 # 第14章 文件
 ## 14.1 持久化
 ## 14.2 读和写
