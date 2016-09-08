@@ -7,8 +7,7 @@
      2a.解释语言(interpret)            2b.编译语言(compile)
           ①交互模式                    3b.目标代码(object code)
           ②脚本模式                    4b.可执行(executable)     
-                      3a(5b).输出(output)"""
-
+                      3a(5b).输出(output)""" 
 ###调试与出错
 调试(debugging)	
 
